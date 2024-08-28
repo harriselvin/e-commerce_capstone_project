@@ -12,10 +12,19 @@ const getUsersDB = async () => {
   }
 };
 
-  let [data] = await pool.query(`
-    SELECT * FROM users
-    `)
-  return data
-}
+const getUserDB = async (id) => {
+  try {
+    let [[data]] = await pool.query(`
+      SELECT * FROM users
+      WHERE UserID = ?
+    `, [id]);
+    return data;
+  } catch (error) {
+    console.error('Error retrieving user:', error);
+    throw error;
+  }
+};
 
-export { getUsersDB }
+// const 
+
+export { getUsersDB, getUserDB }

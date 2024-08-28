@@ -1,8 +1,9 @@
 import express from 'express';
-import { fetchProducts } from '../controller/productsFunctions.js'
+import { fetchProducts, fetchProduct } from '../controller/productsFunctions.js'
 
 const prodRouter = express.Router()
 
-prodRouter.get('/', fetchProducts)
+prodRouter.get('/items', fetchProducts)
+prodRouter.get('/item/:id', fetchProduct)
 
 export default prodRouter

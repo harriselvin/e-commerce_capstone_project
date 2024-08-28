@@ -1,9 +1,13 @@
-import { getProductsDB } from '../model/productsDB.js'
+import { getProductsDB, getProductDB } from '../model/productsDB.js'
 
 const fetchProducts = async (req, res) => {
   res.json(await getProductsDB())
 }
 
-export { fetchProducts }
+const fetchProduct = async (req, res) => {
+  res.json(await getProductDB(req.params.id))
+}
+
+export { fetchProducts, fetchProduct }
 
 

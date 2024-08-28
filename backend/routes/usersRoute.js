@@ -1,8 +1,9 @@
 import express from 'express';
-import { fetchUsers } from '../controller/usersFunctions.js'
+import { fetchUsers, fetchUser } from '../controller/usersFunctions.js'
 
 const userRouter = express.Router()
 
-userRouter.get('/', fetchUsers)
+userRouter.get('/users', fetchUsers)
+userRouter.get('/user/:id', fetchUser)
 
 export default userRouter
