@@ -33,10 +33,16 @@ export default {
   .navbar a {
     font-weight: bold;
     color: #2c3e50;
+    text-decoration: none;
+    transition: .3s;
+  }
+
+  .navbar a:hover {
+    color: orangered;
   }
 
   .navbar a.router-link-exact-active {
-    color: #42b983;
+    color: orangered;
   }
   .navbar .other-pages {
     margin-right: 2.5em;
