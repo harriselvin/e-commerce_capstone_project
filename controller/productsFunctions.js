@@ -5,3 +5,5 @@ const fetchProducts = async (req, res) => {
 }
 
 export { fetchProducts }
+
+

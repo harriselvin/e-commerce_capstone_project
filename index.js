@@ -1,5 +1,6 @@
 import express from 'express'
 import userRouter from './routes/usersRoute.js'
+
 import prodRouter from './routes/productsRoute.js'
 
 const port = process.env.PORT || 2000
