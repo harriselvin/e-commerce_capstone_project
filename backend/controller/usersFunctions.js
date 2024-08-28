@@ -1,6 +1,6 @@
 import { getUsersDB } from '../model/usersDB.js'
 
-const fetchUsers = (req, res) => {
+const fetchUsers = async (req, res) => {
   res.join(await getUsersDB())
 }
 
