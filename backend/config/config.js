@@ -10,4 +10,4 @@ const pool = createPool({
     password: process.env.PASSWORD,
 })
 
-export default pool
+export { pool }
