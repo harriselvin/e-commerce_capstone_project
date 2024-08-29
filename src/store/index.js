@@ -16,7 +16,16 @@ export default createStore({
       state.products = payload
     },
     setProduct(state, payload) {
-      state.product = payload
+      state.product = {
+        prodID: payload.prodID,
+        prodName: payload.prodName,
+        price: payload.price,
+        quantity: payload.quantity,
+        category: payload.category,
+        prodUrl: payload.prodUrl,
+        prodDesc: payload.prodDesc,
+        prodInfo: payload.prodInfo
+      }
     }
   },
   actions: {
@@ -32,9 +41,7 @@ export default createStore({
     async getProduct({commit}, id) {
       try {
         const {data} = await axios.get(`${apiLink}item/${id}`)
-        commit('setProducts', data)
-        console.log(data);
-        console.log(id);
+        commit('setProduct', data)
         
       } catch (error) {
         console.error('Error fetching product:', error);

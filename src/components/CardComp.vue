@@ -1,29 +1,42 @@
 <template>
   <div class="slots">
-      <div v-if="typeof products == 'object'">
-          <slot name="productsSlot">
-              <p>products.prodName</p>
-              <p>products.prodDesc</p>
-              <p>products.prodInfo</p>
-          </slot>
-      </div>
-      <!-- <div v-else-if="typeof education == 'object'">
-          <slot name="educationSlot">
-              <p>projects.description</p>
-              <p>projects.year</p>
-              <p>projects.institution</p>
-          </slot>
-      </div> -->
-      <div v-else>
-          <slot name="noStockSlot">
-              <h2>Out of stock</h2>
-          </slot>
-      </div>
+    <div v-if="loading">
+        <slot name="loadingSlot">
+            <p>Loading...</p>
+        </slot>
+    </div>
+    <div v-else-if="typeof products == 'object'">
+        <slot name="productsSlot">
+            <p>products.prodName</p>
+            <p>products.prodDesc</p>
+            <p>products.prodInfo</p>
+        </slot>
+    </div>
+    <div v-else-if="typeof product == 'object'">
+        <slot name="productSlot">
+            <p>product.prodName</p>
+            <p>product.prodDesc</p>
+            <p>product.prodInfo</p>
+        </slot>
+    </div>
+    <div v-else>
+        <slot name="noStockSlot">
+            <h2>Out of stock</h2>
+        </slot>
+    </div>
   </div>
 </template>
 <script>
 export default {
-  props: ['products']
+  props: ['products', 'product'],
+  data() {
+    return {
+        loading: true
+    }
+  },
+  mounted() {
+    this.loading = false;
+  }
 }
 </script>
 <style>
