@@ -20,6 +20,9 @@
                             <div class="item-box">
                                 <div class="prod-image">
                                     <img :src=productData.prodUrl :alt=productData.prodName>
+                                    <div class="info-of-prod">
+                                        <p>{{ productData.prodInfo }}</p>
+                                    </div>
                                 </div>
                                 <div class="item-info">
                                     <div class="prod-name">
@@ -39,43 +42,17 @@
                                         <button>Add to Cart</button>
                                     </div>
                                     <div class="desc-boxes">
-                                        <div class="prod-desc">
-                                            <div class="desc-box">
+                                        <div v-for="(desc, index) in descriptions" :key="index" class="prod-desc">
+                                            <div class="desc-box" @click="toggleDesc(index)">
                                                 <div class="desc-heading">
-                                                    <p>PRODUCT INFO</p>
+                                                    <p>{{ desc.title }}</p>
                                                 </div>
                                                 <div class="desc-dropdown">
-                                                    <p @click="displayProdData($event)"></p>
+                                                    {{ expandedIndex === index ? '-' : '+' }}
                                                 </div>
                                             </div>
-                                            <div class="desc-of-prod">
-                                                <p class="expansion">{{ productData.prodDesc }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="prod-desc">
-                                            <div class="desc-box">
-                                                <div class="desc-heading">
-                                                    <p>RETURN & REFUND POLICY</p>
-                                                </div>
-                                                <div class="desc-dropdown">
-                                                    <p @click="displayProdData($event)"></p>
-                                                </div>
-                                            </div>
-                                            <div class="desc-of-prod">
-                                                <p class="expansion">{{ productData.prodDesc }}</p>
-                                            </div>
-                                        </div>
-                                        <div class="prod-desc">
-                                            <div class="desc-box">
-                                                <div class="desc-heading">
-                                                    <p>SHIPPING INFO</p>
-                                                </div>
-                                                <div class="desc-dropdown">
-                                                    <p @click="displayProdData($event)"></p>
-                                                </div>
-                                            </div>
-                                            <div class="desc-of-prod">
-                                                <p class="expansion">{{ productData.prodDesc }}</p>
+                                            <div class="desc-of-prod" :class="{show: expandedIndex === index}">
+                                                <p class="expansion">{{ desc.content }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -90,6 +67,7 @@
 </template>
 <script>
 import CardComp from '@/components/CardComp.vue';
+import { toRaw } from 'vue';
 
 export default {
     data() {
@@ -97,6 +75,12 @@ export default {
             productId: null,
             loading: true,
             quantity: 1,
+            expandedIndex: 0,
+            descriptions: [
+                { title: "PRODUCT INFO", content: "" },
+                { title: "RETURN & REFUND POLICY", content: "Returns are accepted within 30 days of delivery for a refund or exchange if items are in original condition. Contact customer service to initiate a return and receive a return shipping label. Return shipping costs are the customer’s responsibility, unless due to our error. Refunds are processed within 5-7 business days after receiving the item." },
+                { title: "SHIPPING INFO", content: "Standard Shipping: 5-7 days, free on orders over $50. Expedited Shipping: 2-3 days, $9.99 flat rate. Express Shipping: Next-day delivery, $19.99 flat rate. International shipping is available; rates and times vary. Orders are processed within 1-2 business days and come with tracking." }
+            ]
         }
     },
     props: {
@@ -115,8 +99,18 @@ export default {
     },
     methods: {
         async getProduct() {
-          await this.$store.dispatch('getProduct', this.$route.params.id)
-          this.loading = false
+            try {
+                await this.$store.dispatch('getProduct', this.$route.params.id)
+                this.loading = false
+
+                const rawProductData = toRaw(this.productData)
+                
+                if (this.descriptions?.length > 0 && rawProductData && rawProductData.prodDesc) {
+                    this.descriptions[0].content = rawProductData.prodDesc
+                }
+            } catch (error) {
+                console.error("Failed to fetch product data:", error);
+            }
         },
         quantityDisable() {
             return this.quantity <= 0;
@@ -129,30 +123,8 @@ export default {
                 this.quantity = value
             }
         },
-        displayProdData(event) {
-            const target = event.target
-            const descBox = target.parentNode
-            if (!descBox) return
-            const expansion = descBox.nextElementSibling
-            if (!expansion) return
-            const isExpanded = expansion.classList.contains('show')
-
-            const descBoxes = document.querySelectorAll('.desc-box')
-            descBoxes.forEach((box) => {
-                if (box !== descBox) {
-                    // box.classList.remove('show')
-                    box.nextElementSibling.classList.remove('show')
-                    box.querySelector('.desc-dropdown').textContent = '+'
-                }
-            });
-            
-            if (isExpanded) {
-                expansion.classList.remove('show')
-                target.textContent = '+'
-            } else {
-                expansion.classList.add('show')
-                target.textContent = '-'
-            }
+        toggleDesc(index) {
+            this.expandedIndex = this.expandedIndex === index ? null : index
         },
     },
     mounted() {
@@ -190,28 +162,35 @@ export default {
     .routes .router:hover {
         text-decoration: underline;
     }
-    .prod-image {
-        width: 100%;
+    .item-box {
         display: flex;
-        flex: 100%;
-        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 1em;
+    }
+    .prod-image {
+        flex: 1 1 30em;
+        min-width: 6em;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        max-width: 30em;
+        margin-left: 10%;
     }
     .prod-image img {
-        width: 40em;
-        min-width: 6em;
+        height: auto;
+        max-height: 40em;
         border: 2px solid lightgrey;
-        flex: 1;
+        object-fit: cover;
     }
-    .item-box {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
-        margin: 10cqi;
+    .info-of-prod {
+        margin: 2em 0 0;
     }
     .item-info {
+        flex: 1 1 10em;
+        min-width: 6em;
+        padding: 1em;
+        margin-right: 20%;
         text-align: left;
-        width: clamp(5em, 100%, 15em);
-        flex: 50%;
-        padding: 0 2em;
     }
     .item-info h3 {
         width: 100%;
@@ -238,6 +217,7 @@ export default {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        cursor: pointer;
     }
     .desc-heading {
         font-weight: 500;
@@ -247,18 +227,21 @@ export default {
         overflow: hidden;
         transition: max-height .5s;
     }
-    .desc-of-prod .show {
+    .desc-of-prod.show {
         max-height: 100vh;
         overflow: visible;
     }
     .desc-dropdown {
         color: grey;
-        cursor: pointer;
+        height: 1em;
+        transition: .5s;
     }
-    .desc-dropdown::before {
-        content: '+'
+    .desc-dropdown:hover {
+        opacity: .8;
     }
-    .desc-dropdown .expanded::before {
-        content: '-'
+    @media only screen and (max-width: 700px) {
+        .item-info {
+            margin: 0;
+        }
     }
 </style>
