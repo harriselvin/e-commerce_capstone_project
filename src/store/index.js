@@ -6,13 +6,17 @@ const apiLink = 'https://e-commerce-capstone-project.onrender.com/'
 
 export default createStore({
   state: {
-    products: null
+    products: null,
+    product: null
   },
   getters: {
   },
   mutations: {
     setProducts(state, payload) {
       state.products = payload
+    },
+    setProduct(state, payload) {
+      state.product = payload
     }
   },
   actions: {
@@ -24,7 +28,19 @@ export default createStore({
         console.error('Error fetching products:', error);
         commit('setError', error.message)
       }
-    }
+    },
+    async getProduct({commit}, id) {
+      try {
+        const {data} = await axios.get(`${apiLink}item/${id}`)
+        commit('setProducts', data)
+        console.log(data);
+        console.log(id);
+        
+      } catch (error) {
+        console.error('Error fetching product:', error);
+        commit('setError', error.message)
+      }
+    },
   },
   modules: {
   }
