@@ -7,8 +7,14 @@
           <card-comp :products="prods">
             <template #productsSlot>
               <div class="products">
-                <div class="img">
-                  <img :src=prods.prodUrl :alt=prods.prodName>
+                <!-- <router-link class="prod-btn" :to="{name: 'product', params:{id: prods.prodID}}"> -->
+                  <div class="img">
+                    <img :src=prods.prodUrl :alt=prods.prodName>
+                  </div>
+                <!-- </router-link> -->
+                <div class="prod-info">
+                  <h3>{{ prods.prodName }}</h3>
+                  <p>R{{ prods.price }}</p>
                 </div>
               </div>
             </template>
@@ -31,12 +37,18 @@ export default {
   computed: {
     productsData() {
       return this.$store.state.products
-    }
+    },
+    // productData() {
+    //   return this.$store.state.product
+    // }
   },
   methods: {
     getProducts() {
       return this.$store.dispatch('getProducts')
-    }
+    },
+    // getProduct() {
+    //   return this.$store.dispatch('getProduct')
+    // }
   },
   mounted() {
     this.getProducts()
@@ -55,19 +67,21 @@ export default {
   }
   .prod-box {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(25em, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
     gap: 1.1em;
     margin: 2em;
   }
   .img {
     position: relative;
-    width: clamp(5em, 100vw, 26em);
+    width: clamp(0, 100vw, 23em);
     overflow: hidden;
     transition: .5s ease;
   }
   .img img {
     width: 100%;
-    height: 35em;
+    height: 30em;
+    object-fit: cover;
+    border: 1px solid #e6e6e6;
   }
   .img::after {
     content: "Quick View";
@@ -78,7 +92,6 @@ export default {
     left: 0;
     width: 100%;
     transform: translateY(100%);
-    z-index: 1;
     transition: transform .5s, opacity .5s;
     opacity: 0;
     animation: slide-up .5s forwards;
@@ -86,6 +99,7 @@ export default {
   .img:hover {
     transform: translateY(0);
     opacity: 1;
+    cursor: pointer;
   }
   .img:not(:hover)::after {
     animation: slide-down 0.5s forwards;
@@ -106,13 +120,17 @@ export default {
   }
 
   @keyframes slide-down {
-  from {
-    transform: translateY(0);
-    opacity: 1;
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(100%);
+      opacity: 0;
+    }
   }
-  to {
-    transform: translateY(100%);
-    opacity: 0;
+
+  .prod-info {
+    text-align: left;
   }
-}
 </style>

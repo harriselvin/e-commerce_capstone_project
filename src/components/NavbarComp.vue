@@ -25,9 +25,10 @@ export default {
     display: flex;
     justify-content: space-between;
     position: fixed;
-    min-width: 100vw;
+    min-width: 100%;
     background-color: white;
     top: 0;
+    z-index: 1;
   }
 
   .navbar a {

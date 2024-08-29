@@ -25,6 +25,9 @@ export default {
 }
 </script>
 <style>
+  .container {
+    min-width: 100%;
+  }
   .shop-section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
@@ -49,5 +52,11 @@ export default {
   .image img {
     width: clamp(20em, 100vw, 100%);
     height: 100%;
+  }
+
+  @media only screen and (max-width: 300px) {
+    .container {
+      margin-left: 2em;
+    }
   }
 </style>
