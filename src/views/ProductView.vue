@@ -1,13 +1,264 @@
 <template>
-    <div>
-        
+    <div class="prod-container">
+        <div>
+            <div v-if="loading">Loading...</div>
+            <div v-else>
+                <div>
+                    <div class="routes">
+                        <router-link class="router" :to="{name: 'home'}">
+                            Home
+                        </router-link> /
+                        <router-link class="router" :to="{name: 'shop'}">
+                            Shop
+                        </router-link> /
+                        <div class="cur-router">
+                            {{ productData.prodName }}
+                        </div>
+                    </div>
+                    <card-comp :product="productData">
+                        <template #productSlot>
+                            <div class="item-box">
+                                <div class="prod-image">
+                                    <img :src=productData.prodUrl :alt=productData.prodName>
+                                </div>
+                                <div class="item-info">
+                                    <div class="prod-name">
+                                        <h3>{{ productData.prodName }}</h3>
+                                        <p>Item No.: {{ productData.prodID }}</p>
+                                    </div>
+                                    <div class="prod-price">
+                                        <p>R{{ productData.price }}</p>
+                                    </div>
+                                    <div class="prod-quan">
+                                        <p>Quantity</p>
+                                        <input @input="updateQuantity($event)" type="number" name="quantity"
+                                        :disabled="quantityDisable()"
+                                        min="1">
+                                    </div>
+                                    <div class="prod-btn">
+                                        <button>Add to Cart</button>
+                                    </div>
+                                    <div class="desc-boxes">
+                                        <div class="prod-desc">
+                                            <div class="desc-box">
+                                                <div class="desc-heading">
+                                                    <p>PRODUCT INFO</p>
+                                                </div>
+                                                <div class="desc-dropdown">
+                                                    <p @click="displayProdData($event)"></p>
+                                                </div>
+                                            </div>
+                                            <div class="desc-of-prod">
+                                                <p class="expansion">{{ productData.prodDesc }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="prod-desc">
+                                            <div class="desc-box">
+                                                <div class="desc-heading">
+                                                    <p>RETURN & REFUND POLICY</p>
+                                                </div>
+                                                <div class="desc-dropdown">
+                                                    <p @click="displayProdData($event)"></p>
+                                                </div>
+                                            </div>
+                                            <div class="desc-of-prod">
+                                                <p class="expansion">{{ productData.prodDesc }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="prod-desc">
+                                            <div class="desc-box">
+                                                <div class="desc-heading">
+                                                    <p>SHIPPING INFO</p>
+                                                </div>
+                                                <div class="desc-dropdown">
+                                                    <p @click="displayProdData($event)"></p>
+                                                </div>
+                                            </div>
+                                            <div class="desc-of-prod">
+                                                <p class="expansion">{{ productData.prodDesc }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </card-comp>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <script>
+import CardComp from '@/components/CardComp.vue';
+
 export default {
-    
+    data() {
+        return {
+            productId: null,
+            loading: true,
+            quantity: 1,
+        }
+    },
+    props: {
+        product: {
+            type: Object,
+            required: true
+        }
+    },
+    components: {
+        CardComp
+    },
+    computed: {
+        productData() {
+          return this.$store.state.product
+        }
+    },
+    methods: {
+        async getProduct() {
+          await this.$store.dispatch('getProduct', this.$route.params.id)
+          this.loading = false
+        },
+        quantityDisable() {
+            return this.quantity <= 0;
+        },
+        updateQuantity(event) {
+            const value = parseInt(event.target.value);
+            if (isNaN(value) || value < 1) {
+                this.quantity = 1;
+            } else {
+                this.quantity = value
+            }
+        },
+        displayProdData(event) {
+            const target = event.target
+            const descBox = target.parentNode
+            if (!descBox) return
+            const expansion = descBox.nextElementSibling
+            if (!expansion) return
+            const isExpanded = expansion.classList.contains('show')
+
+            const descBoxes = document.querySelectorAll('.desc-box')
+            descBoxes.forEach((box) => {
+                if (box !== descBox) {
+                    // box.classList.remove('show')
+                    box.nextElementSibling.classList.remove('show')
+                    box.querySelector('.desc-dropdown').textContent = '+'
+                }
+            });
+            
+            if (isExpanded) {
+                expansion.classList.remove('show')
+                target.textContent = '+'
+            } else {
+                expansion.classList.add('show')
+                target.textContent = '-'
+            }
+        },
+    },
+    mounted() {
+        this.productId = this.$route.params.id
+        this.getProduct()
+    },
+    watch: {
+        quantity(newValue) {
+            if (newValue <= 0) {
+                this.quantity = 1
+            }
+        }
+    }
 }
 </script>
 <style>
-    
+    .prod-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .routes {
+        display: flex;
+        margin: 5em 10cqi 10cqi;
+    }
+    .routes .router {
+        color: orangered;
+    }
+    .routes .router, .cur-router {
+        text-decoration: none;
+        padding: 0 .2em;
+    }
+    .routes .router:hover {
+        text-decoration: underline;
+    }
+    .prod-image {
+        width: 100%;
+        display: flex;
+        flex: 100%;
+        justify-content: flex-end;
+    }
+    .prod-image img {
+        width: 40em;
+        min-width: 6em;
+        border: 2px solid lightgrey;
+        flex: 1;
+    }
+    .item-box {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+        margin: 10cqi;
+    }
+    .item-info {
+        text-align: left;
+        width: clamp(5em, 100%, 15em);
+        flex: 50%;
+        padding: 0 2em;
+    }
+    .item-info h3 {
+        width: 100%;
+    }
+    .prod-quan input {
+        width: 4em;
+        padding: .3em;
+    }
+    .prod-btn {
+        margin: 1em 0;
+    }
+    .prod-btn button {
+        padding: .5em 0;
+        width: 100%;
+        background-color: rgb(255, 119, 0);
+        color: white;
+    }
+    .prod-btn button:active {
+        background-color: orangered;
+    }
+    .desc-box {
+        border-bottom: 1px solid grey;
+        height: 3em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .desc-heading {
+        font-weight: 500;
+    }
+    .desc-of-prod {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height .5s;
+    }
+    .desc-of-prod .show {
+        max-height: 100vh;
+        overflow: visible;
+    }
+    .desc-dropdown {
+        color: grey;
+        cursor: pointer;
+    }
+    .desc-dropdown::before {
+        content: '+'
+    }
+    .desc-dropdown .expanded::before {
+        content: '-'
+    }
 </style>

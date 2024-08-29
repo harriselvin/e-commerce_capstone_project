@@ -7,11 +7,11 @@
           <card-comp :products="prods">
             <template #productsSlot>
               <div class="products">
-                <!-- <router-link class="prod-btn" :to="{name: 'product', params:{id: prods.prodID}}"> -->
+                <router-link class="prod-btn" :to="{name: 'product', params:{id: prods.prodID}}">
                   <div class="img">
                     <img :src=prods.prodUrl :alt=prods.prodName>
                   </div>
-                <!-- </router-link> -->
+                </router-link>
                 <div class="prod-info">
                   <h3>{{ prods.prodName }}</h3>
                   <p>R{{ prods.price }}</p>
@@ -38,17 +38,11 @@ export default {
     productsData() {
       return this.$store.state.products
     },
-    // productData() {
-    //   return this.$store.state.product
-    // }
   },
   methods: {
     getProducts() {
       return this.$store.dispatch('getProducts')
     },
-    // getProduct() {
-    //   return this.$store.dispatch('getProduct')
-    // }
   },
   mounted() {
     this.getProducts()
