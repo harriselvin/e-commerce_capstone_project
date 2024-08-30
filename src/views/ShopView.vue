@@ -1,6 +1,9 @@
 <template>
   <div class="shop-container">
-    <div v-if="productsData">
+    <div v-if="loading">
+      <page-spinner-comp/>
+    </div>
+    <div v-else>
       <shop-comp/>
       <div class="prod-sec">
         <div class="prod-box">
@@ -24,9 +27,6 @@
         </div>
       </div>
     </div>
-    <div v-else>
-      <page-spinner-comp/>
-    </div>
   </div>
 </template>
 
@@ -36,6 +36,11 @@ import ShopComp from '@/components/ShopComp.vue';
 import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
 
 export default {
+  data() {
+    return {
+      loading: true,
+    }
+  },
   components: {
     CardComp,
     ShopComp,
@@ -47,12 +52,22 @@ export default {
     },
   },
   methods: {
-    getProducts() {
-      return this.$store.dispatch('getProducts')
+    async getProducts() {
+      try {
+        await this.$store.dispatch('getProducts')
+
+        this.loading = false
+      } catch (error) {
+        console.error("Failed to fetch product data:", error);
+      }
     },
   },
   mounted() {
-    this.getProducts()
+    try {
+      this.getProducts()
+    } catch (error) {
+      console.error("Failed to fetch product data:", error);
+    }
   }
 }
 </script>
@@ -96,7 +111,7 @@ export default {
     transition: transform .5s, opacity .5s;
     opacity: 0;
     animation: slide-up .5s forwards;
-    color: gray;
+    color: #353531;
   }
   .img:hover {
     transform: translateY(0);

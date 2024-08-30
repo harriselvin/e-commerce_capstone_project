@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="page-spinner">
         <div class="spinner">
             <div></div>   
             <div></div>    
@@ -20,6 +20,12 @@ export default {
 }
 </script>
 <style>
+.page-spinner {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .spinner {
     position: absolute;
     width: 9px;
