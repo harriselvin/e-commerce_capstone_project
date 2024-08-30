@@ -16,10 +16,7 @@
 export default {
   data() {
     return {
-      backgroundImg: 'https://i.pinimg.com/736x/29/6c/93/296c93f3bd54c365485ea1e1ec3cb8d0.jpg',
-      image1: 'https://www.shutterstock.com/shutterstock/videos/4710557/thumb/2.jpg?ip=x480',
-      image2: 'https://image1.masterfile.com/getImage/NjE0LTA1NjYyMjg3ZW4uMDAwMDAwMDA=AL7m0s/614-05662287en_Masterfile.jpg',
-      image3: 'https://us.123rf.com/450wm/dotshock/dotshock1211/dotshock121100682/16715137-soccer-player-doing-kick-with-ball-on-football-stadium-field-isolated-on-black-background.jpg?ver=6'
+      backgroundImg: 'https://i.pinimg.com/736x/29/6c/93/296c93f3bd54c365485ea1e1ec3cb8d0.jpg'
     }
   },
 }
