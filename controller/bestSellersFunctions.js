@@ -1,7 +1,11 @@
-import { getBestSellersDB } from "../model/bestSellersDB.js";
+import { getBestSellersDB, getBestSellerDB } from "../model/bestSellersDB.js";
 
 const fetchBestSellers = async (req, res) => {
     res.json(await getBestSellersDB())
 }
 
-export { fetchBestSellers }
+const fetchBestSeller = async (req, res) => {
+    res.json(await getBestSellerDB(req.params.id))
+  }
+
+export { fetchBestSellers, fetchBestSeller }
