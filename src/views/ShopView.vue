@@ -1,26 +1,31 @@
 <template>
   <div class="shop-container">
-    <shop-comp/>
-    <div class="prod-sec">
-      <div class="prod-box">
-        <div v-for="prods in productsData" :key="prods">
-          <card-comp :products="prods">
-            <template #productsSlot>
-              <div class="products">
-                <router-link class="prod-btn" :to="{name: 'product', params:{id: prods.prodID}}">
-                  <div class="img">
-                    <img :src=prods.prodUrl :alt=prods.prodName>
+    <div v-if="productsData">
+      <shop-comp/>
+      <div class="prod-sec">
+        <div class="prod-box">
+          <div v-for="prods in productsData" :key="prods">
+            <card-comp :products="prods">
+              <template #productsSlot>
+                <div class="products">
+                  <router-link class="prod-btn" :to="{name: 'product', params:{id: prods.prodID}}">
+                    <div class="img">
+                      <img :src=prods.prodUrl :alt=prods.prodName>
+                    </div>
+                  </router-link>
+                  <div class="prod-info">
+                    <h3>{{ prods.prodName }}</h3>
+                    <p>R{{ prods.price }}</p>
                   </div>
-                </router-link>
-                <div class="prod-info">
-                  <h3>{{ prods.prodName }}</h3>
-                  <p>R{{ prods.price }}</p>
                 </div>
-              </div>
-            </template>
-          </card-comp>
+              </template>
+            </card-comp>
+          </div>
         </div>
       </div>
+    </div>
+    <div v-else>
+      <page-spinner-comp/>
     </div>
   </div>
 </template>
@@ -28,11 +33,13 @@
 <script>
 import CardComp from '@/components/CardComp.vue';
 import ShopComp from '@/components/ShopComp.vue';
+import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
 
 export default {
   components: {
     CardComp,
-    ShopComp
+    ShopComp,
+    PageSpinnerComp
   },
   computed: {
     productsData() {
@@ -89,6 +96,7 @@ export default {
     transition: transform .5s, opacity .5s;
     opacity: 0;
     animation: slide-up .5s forwards;
+    color: gray;
   }
   .img:hover {
     transform: translateY(0);

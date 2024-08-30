@@ -1,7 +1,9 @@
 <template>
     <div class="prod-container">
         <div>
-            <div v-if="loading">Loading...</div>
+            <div v-if="loading">
+                <page-spinner-comp/>
+            </div>
             <div v-else>
                 <div>
                     <div class="routes">
@@ -68,6 +70,7 @@
 <script>
 import CardComp from '@/components/CardComp.vue';
 import { toRaw } from 'vue';
+import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
 
 export default {
     data() {
@@ -78,8 +81,8 @@ export default {
             expandedIndex: 0,
             descriptions: [
                 { title: "PRODUCT INFO", content: "" },
-                { title: "RETURN & REFUND POLICY", content: "Returns are accepted within 30 days of delivery for a refund or exchange if items are in original condition. Contact customer service to initiate a return and receive a return shipping label. Return shipping costs are the customer’s responsibility, unless due to our error. Refunds are processed within 5-7 business days after receiving the item." },
-                { title: "SHIPPING INFO", content: "Standard Shipping: 5-7 days, free on orders over $50. Expedited Shipping: 2-3 days, $9.99 flat rate. Express Shipping: Next-day delivery, $19.99 flat rate. International shipping is available; rates and times vary. Orders are processed within 1-2 business days and come with tracking." }
+                { title: "RETURN & REFUND POLICY", content: "Returns are accepted within 30 days of delivery for a refund or exchange if items are in original condition. Contact customer service to initiate a return and receive a return shipping label. Return shipping costs are the customer’s responsibility, unless due to our error. Refunds are processed within 5-7 business days after receiving the item. More info can be found on the FAQ page" },
+                { title: "SHIPPING INFO", content: "Standard Shipping: 5-7 days, free on orders over $50. Expedited Shipping: 2-3 days, $9.99 flat rate. Express Shipping: Next-day delivery, $19.99 flat rate. International shipping is available; rates and times vary. Orders are processed within 1-2 business days and come with tracking. More info can be found on the FAQ page" }
             ]
         }
     },
@@ -90,7 +93,8 @@ export default {
         }
     },
     components: {
-        CardComp
+        CardComp,
+        PageSpinnerComp
     },
     computed: {
         productData() {
@@ -183,7 +187,7 @@ export default {
         object-fit: cover;
     }
     .info-of-prod {
-        margin: 2em 0 0;
+        margin: 2em 0 1cqi;
     }
     .item-info {
         flex: 1 1 10em;
