@@ -7,7 +7,9 @@ const apiLink = 'https://e-commerce-capstone-project.onrender.com/'
 export default createStore({
   state: {
     products: null,
-    product: null
+    product: null,
+    bestSellers: null,
+    bestSeller: null
   },
   getters: {
   },
@@ -26,7 +28,18 @@ export default createStore({
         prodDesc: payload.prodDesc,
         prodInfo: payload.prodInfo
       }
-    }
+    },
+    setBestSellers(state, payload) {
+      state.bestSellers = payload
+    },
+    setBestSeller(state, payload) {
+      state.bestSeller = {
+        bestSellerID: payload.bestSellerID,
+        sellerName: payload.sellerName,
+        sellerPrice: payload.sellerPrice,
+        sellerUrl: payload.sellerUrl,
+      }
+    },
   },
   actions: {
     async getProducts({commit}) {
@@ -45,6 +58,25 @@ export default createStore({
         
       } catch (error) {
         console.error('Error fetching product:', error);
+        commit('setError', error.message)
+      }
+    },
+    async getBestSellers({commit}) {
+      try {
+        const {data} = await axios.get(`${apiLink}bestSellers`)
+        commit('setBestSellers', data)
+      } catch (error) {
+        console.error('Error fetching best sellers:', error);
+        commit('setError', error.message)
+      }
+    },
+    async getBestSeller({commit}, id) {
+      try {
+        const {data} = await axios.get(`${apiLink}bestSeller/${id}`)
+        commit('setBestSeller', data)
+        
+      } catch (error) {
+        console.error('Error fetching best seller:', error);
         commit('setError', error.message)
       }
     },

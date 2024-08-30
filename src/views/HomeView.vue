@@ -1,8 +1,8 @@
 <template>
   <div class="home">
-    <!-- <div v-if="loading">
+    <div v-if="loading">
       <page-spinner-comp/>
-    </div> -->
+    </div>
     <div>
       <div class="home-head">
         <div class="home-store">
@@ -55,11 +55,18 @@
           </div>
         </div>
       </div>
+      <div>
+        <home-comp/>
+      </div>
+      <div>
+
+      </div>
     </div>
   </div>
 </template>
 <script>
-// import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
+import HomeComp from '@/components/HomeComp.vue';
+import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
 
 export default {
   data() {
@@ -78,11 +85,30 @@ export default {
     }
   },
   components: {
-    // PageSpinnerComp
+    HomeComp,
+    PageSpinnerComp
+  },
+  computed: {
+    productsData() {
+      return this.$store.state.products
+    },
   },
   methods: {
-    getHomeData() {
-      this.loading = false;
+    async getProducts() {
+      try {
+        await this.$store.dispatch('getProducts')
+
+        this.loading = false
+      } catch (error) {
+        console.error("Failed to fetch product data:", error);
+      }
+    },
+  },
+  mounted() {
+    try {
+      this.getProducts()
+    } catch (error) {
+      console.error("Failed to fetch product data:", error);
     }
   }
 }
@@ -96,6 +122,9 @@ export default {
   }
   .home-head > .home-store, .home-main-img {
     flex: 1;
+  }
+  .soccer-ball-img img {
+    min-width: 15em;
   }
   .shop-now {
     text-align: left;
@@ -178,10 +207,7 @@ export default {
     margin: -.2em 0;
   }
 
-  @media only screen and (min-height: 701px) and (max-height: 850px)  {
-    .bicycle-img img {
-      display: none;
-    }
+  @media only screen and (min-height: 701px) and (max-height: 900px)  {
     .shop-now-btn {
       margin: 0 0 1em;
     }
@@ -204,6 +230,7 @@ export default {
     }
     .offer-sec {
       min-width: 80vh;
+      margin: 0 0 -20em;
       overflow: hidden;
     }
   }

@@ -19,6 +19,13 @@
             <p>product.prodInfo</p>
         </slot>
     </div>
+    <div v-else-if="typeof bestSellers == 'object'">
+        <slot name="bestSellerSlot">
+            <p>bestSellers.sellerName</p>
+            <p>bestSellers.sellerPrice</p>
+            <p>bestSellers.sellerUrl</p>
+        </slot>
+    </div>
     <div v-else>
         <slot name="noStockSlot">
             <h2>Out of stock</h2>
@@ -28,7 +35,7 @@
 </template>
 <script>
 export default {
-  props: ['products', 'product'],
+  props: ['products', 'product', 'bestSellers'],
   data() {
     return {
         loading: true

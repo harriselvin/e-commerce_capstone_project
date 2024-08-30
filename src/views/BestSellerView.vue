@@ -10,28 +10,25 @@
                         <router-link class="router" :to="{name: 'home'}">
                             Home
                         </router-link> /
-                        <router-link class="router" :to="{name: 'shop'}">
-                            Shop
-                        </router-link> /
                         <div class="cur-router">
-                            {{ productData.prodName }}
+                            {{ sellerData.sellerName }}
                         </div>
                     </div>
-                    <card-comp :product="productData">
+                    <card-comp :product="sellerData">
                         <template #productSlot>
                             <div class="item-box">
                                 <div class="prod-image">
-                                    <img :src=productData.prodUrl :alt=productData.prodName>
+                                    <img :src=sellerData.sellerUrl :alt=sellerData.sellerName>
                                     <div class="info-of-prod">
-                                        <p>{{ productData.prodInfo }}</p>
+                                        <p>{{ sellerData.sellerInfo }}</p>
                                     </div>
                                 </div>
                                 <div class="item-info">
                                     <div class="prod-name">
-                                        <h3>{{ productData.prodName }}</h3>
+                                        <h3>{{ sellerData.sellerName }}</h3>
                                     </div>
                                     <div class="prod-price">
-                                        <p>R{{ productData.price }}</p>
+                                        <p>R{{ sellerData.sellerPrice }}</p>
                                     </div>
                                     <div class="prod-quan">
                                         <p>Quantity</p>
@@ -86,7 +83,7 @@ export default {
         }
     },
     props: {
-        product: {
+        bestSeller: {
             type: Object,
             required: true
         }
@@ -96,23 +93,23 @@ export default {
         PageSpinnerComp
     },
     computed: {
-        productData() {
-          return this.$store.state.product
+        sellerData() {
+          return this.$store.state.bestSeller
         }
     },
     methods: {
-        async getProduct() {
+        async getBestSeller() {
             try {
-                await this.$store.dispatch('getProduct', this.$route.params.id)
+                await this.$store.dispatch('getBestSeller', this.$route.params.id)
                 this.loading = false
 
-                const rawProductData = toRaw(this.productData)
+                const rawSellerData = toRaw(this.sellerData)
                 
-                if (this.descriptions?.length > 0 && rawProductData && rawProductData.prodDesc) {
-                    this.descriptions[0].content = rawProductData.prodDesc
+                if (this.descriptions?.length > 0 && rawSellerData && rawSellerData.sellerDesc) {
+                    this.descriptions[0].content = rawSellerData.sellerDesc
                 }
             } catch (error) {
-                console.error("Failed to fetch product data:", error);
+                console.error("Failed to fetch best seller data:", error);
             }
         },
         quantityDisable() {
@@ -132,7 +129,7 @@ export default {
     },
     mounted() {
         this.productId = this.$route.params.id
-        this.getProduct()
+        this.getBestSeller()
     },
     watch: {
         quantity(newValue) {
