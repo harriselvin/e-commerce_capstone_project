@@ -123,8 +123,11 @@ export default {
   .home-head > .home-store, .home-main-img {
     flex: 1;
   }
-  .soccer-ball-img img {
+  .soccer-ball-img {
     min-width: 15em;
+  }
+  .soccer-ball-img img {
+    width: 100%;
   }
   .shop-now {
     text-align: left;
