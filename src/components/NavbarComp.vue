@@ -2,7 +2,7 @@
   <div class="nav-container">
     <nav class="navbar">
       <div class="home-page">
-        <router-link to="/home">Home</router-link> 
+        <router-link to="/">Home</router-link> 
       </div>
       <div class="other-pages">
         <router-link to="/shop">Shop</router-link> |
