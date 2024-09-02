@@ -38,6 +38,10 @@ export default createStore({
         sellerName: payload.sellerName,
         sellerPrice: payload.sellerPrice,
         sellerUrl: payload.sellerUrl,
+        sellerQuantity: payload.sellerQuantity,
+        sellerCategory: payload.sellerCategory,
+        sellerDesc: payload.sellerDesc,
+        sellerInfo: payload.sellerInfo
       }
     },
   },

@@ -55,7 +55,7 @@
           </div>
         </div>
       </div>
-      <div>
+      <div class="home-comp">
         <home-comp/>
       </div>
       <div>
@@ -226,6 +226,9 @@ export default {
     }
     .shop-now-btn {
       margin: 0 0 1em;
+    }
+    .soccer-ball-img, .home-comp {
+      min-width: 80vh;
     }
     .offer-box {
       height: 40vh;

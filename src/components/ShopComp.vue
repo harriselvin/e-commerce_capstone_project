@@ -30,6 +30,7 @@ export default {
     grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
     justify-content: center;
     align-items: center;
+    width: clamp(20em, 100vw, 100%);
   }
   .text-sec {
     background-color: orangered;
@@ -52,7 +53,7 @@ export default {
   }
 
   @media only screen and (max-width: 300px) {
-    .container {
+    .shop-section {
       margin-left: 2em;
     }
   }

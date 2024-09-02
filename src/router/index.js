@@ -6,7 +6,7 @@ import BestSellerView from '@/views/BestSellerView.vue'
 
 const routes = [
   {
-    path: '/home',
+    path: '/',
     name: 'home',
     component: HomeView
   },
