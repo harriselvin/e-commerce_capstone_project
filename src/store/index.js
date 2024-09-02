@@ -9,7 +9,8 @@ export default createStore({
     products: null,
     product: null,
     bestSellers: null,
-    bestSeller: null
+    bestSeller: null,
+    faq: null
   },
   getters: {
   },
@@ -44,6 +45,9 @@ export default createStore({
         sellerInfo: payload.sellerInfo
       }
     },
+    setFaq(state, payload) {
+      state.faq = payload
+    }
   },
   actions: {
     async getProducts({commit}) {
@@ -81,6 +85,15 @@ export default createStore({
         
       } catch (error) {
         console.error('Error fetching best seller:', error);
+        commit('setError', error.message)
+      }
+    },
+    async getFaq({commit}) {
+      try {
+        const {data} = await axios.get(`${apiLink}faq`)
+        commit('setFaq', data)
+      } catch (error) {
+        console.error('Error fetching faq:', error);
         commit('setError', error.message)
       }
     },

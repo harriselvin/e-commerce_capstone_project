@@ -3,7 +3,7 @@
         <div class="best-seller-head">
             <h3>Best <br> Sellers</h3>
         </div>
-        <div class="best-sellers">
+        <div v-if="sellerData" class="best-sellers">
             <div v-for="seller in sellerData" :key="seller">
                 <card-comp :bestSellers="seller">
                     <template #bestSellerSlot>
@@ -23,6 +23,9 @@
                     </template>
                 </card-comp>
             </div>
+        </div>
+        <div v-else>
+            <p>Failed to Fetch Data</p>
         </div>
     </div>
 </template>

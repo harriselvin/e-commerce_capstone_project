@@ -3,7 +3,7 @@
     <div v-if="loading">
       <page-spinner-comp/>
     </div>
-    <div v-else>
+    <div v-else-if="productsData">
       <shop-comp/>
       <div class="prod-sec">
         <div class="prod-box">
@@ -29,6 +29,9 @@
       <div class="footer-comp">
         <footer-comp/>
       </div>
+    </div>
+    <div v-else class="error-products">
+      <p>Failed to Fetch Product Data</p>
     </div>
   </div>
 </template>
@@ -136,6 +139,9 @@ export default {
     transform-style: flat;
     transform: translateY(100%);
     opacity: 0;
+  }
+  .error-products {
+    margin: 10em 0 0;
   }
 
   @keyframes slide-up {
