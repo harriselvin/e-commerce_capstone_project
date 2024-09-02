@@ -4,7 +4,7 @@
             <div v-if="loading">
                 <page-spinner-comp/>
             </div>
-            <div v-else>
+            <div v-else-if="sellerData">
                 <div>
                     <div class="routes">
                         <router-link class="router" :to="{name: 'home'}">
@@ -59,6 +59,9 @@
                         </template>
                     </card-comp>
                 </div>
+            </div>
+            <div v-else class="error-seller">
+                <p>Failed to Fetch Best Seller Data</p>
             </div>
         </div>
     </div>
@@ -239,6 +242,10 @@ export default {
     .desc-dropdown:hover {
         opacity: .8;
     }
+    .error-seller {
+        margin: 10em 0 0;
+    }
+
     @media only screen and (max-width: 700px) {
         .item-info {
             margin: 0;
