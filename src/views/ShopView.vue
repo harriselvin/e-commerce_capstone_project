@@ -26,6 +26,9 @@
           </div>
         </div>
       </div>
+      <div class="footer-comp">
+        <footer-comp/>
+      </div>
     </div>
   </div>
 </template>
@@ -34,6 +37,7 @@
 import CardComp from '@/components/CardComp.vue';
 import ShopComp from '@/components/ShopComp.vue';
 import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
+import FooterComp from '@/components/FooterComp.vue';
 
 export default {
   data() {
@@ -44,7 +48,8 @@ export default {
   components: {
     CardComp,
     ShopComp,
-    PageSpinnerComp
+    PageSpinnerComp,
+    FooterComp
   },
   computed: {
     productsData() {

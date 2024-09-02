@@ -153,7 +153,6 @@ export default {
     }
     .routes {
         display: flex;
-        margin: 5em 10cqi 10cqi;
     }
     .routes .router {
         color: orangered;
@@ -192,7 +191,7 @@ export default {
         flex: 1 1 10em;
         min-width: 6em;
         padding: 1em;
-        margin-right: 20%;
+        margin-right: 10%;
         text-align: left;
     }
     .item-info h3 {

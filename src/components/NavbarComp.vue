@@ -2,7 +2,9 @@
   <div class="nav-container">
     <nav class="navbar">
       <div class="home-page">
-        <router-link to="/">Home</router-link> 
+        <router-link to="/">
+          <img class="logo-img" :src="lightLogo" alt="Logo">
+        </router-link> 
       </div>
       <div class="other-pages">
         <router-link to="/shop">Shop</router-link> |
@@ -13,7 +15,11 @@
 </template>
 <script>
 export default {
-  
+  data() {
+    return {
+      lightLogo: 'https://harriselvin.github.io/hostedImages/Images/Light_Mode_PP_Logo.png',
+    }
+  }
 }
 </script>
 <style>
@@ -44,6 +50,9 @@ export default {
 
   .navbar a.router-link-exact-active {
     color: orangered;
+  }
+  .navbar .logo-img {
+    width: 3em;
   }
   .navbar .other-pages {
     margin-right: 2.5em;

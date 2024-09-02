@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" id="home">
     <div v-if="loading">
       <page-spinner-comp/>
     </div>
@@ -86,12 +86,16 @@
           </div>
         </div>
       </div>
+      <div class="footer-comp">
+        <footer-comp/>
+      </div>
     </div>
   </div>
 </template>
 <script>
 import HomeComp from '@/components/HomeComp.vue';
 import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
+import FooterComp from '@/components/FooterComp.vue';
 
 export default {
   data() {
@@ -114,7 +118,8 @@ export default {
   },
   components: {
     HomeComp,
-    PageSpinnerComp
+    PageSpinnerComp,
+    FooterComp
   },
   computed: {
     productsData() {
@@ -292,7 +297,7 @@ export default {
     margin: 0 0 5em;
   }
 
-  @media only screen and (min-height: 701px) and (max-height: 900px)  {
+  @media only screen and (min-width: 701px) and (max-width: 900px)  {
     .shop-now-btn {
       margin: 0 0 1em;
     }
@@ -322,7 +327,7 @@ export default {
       overflow: hidden;
     }
     .shop-category {
-      min-width: 46em;
+      min-width: 43em;
     }
     .categories {
       grid-template-columns: repeat(auto-fit, minmax(30em, 1fr));
