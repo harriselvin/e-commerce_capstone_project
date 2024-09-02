@@ -17,7 +17,7 @@
                         <div class="seller-content-box">
                             <div>
                                 <h5>{{ seller.sellerName }}</h5>
-                                <p>{{ seller.sellerPrice }}</p>
+                                <p>R{{ seller.sellerPrice }}</p>
                             </div>
                         </div>
                     </template>

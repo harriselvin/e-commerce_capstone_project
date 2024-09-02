@@ -14,8 +14,8 @@
                             {{ sellerData.sellerName }}
                         </div>
                     </div>
-                    <card-comp :bestSellers="sellerData">
-                        <template #bestSellerSlot>
+                    <card-comp :product="sellerData">
+                        <template #productSlot>
                             <div class="item-box">
                                 <div class="prod-image">
                                     <img :src=sellerData.sellerUrl :alt=sellerData.sellerName>
@@ -150,7 +150,7 @@ export default {
     }
     .routes {
         display: flex;
-        margin-bottom: 5em;
+        margin: 10em 10cqi 5em;
     }
     .routes .router {
         color: orangered;
@@ -169,14 +169,16 @@ export default {
     }
     .prod-image {
         flex: 1 1 30em;
-        width: clamp(10em, 100vw, 30em);
+        width: 6em;
         display: flex;
         justify-content: center;
         flex-direction: column;
+        max-width: 30em;
+        margin-left: 10%;
     }
     .prod-image img {
         height: auto;
-        min-height: 10em;
+        max-height: 40em;
         border: 2px solid lightgrey;
         object-fit: cover;
     }
@@ -185,10 +187,9 @@ export default {
     }
     .item-info {
         flex: 1 1 10em;
+        min-width: 6em;
         padding: 1em;
-        width: clamp(10em, 100vw, 100%);
-        display: flex;
-        flex-direction: column;
+        margin-right: 20%;
         text-align: left;
     }
     .item-info h3 {
@@ -237,5 +238,10 @@ export default {
     }
     .desc-dropdown:hover {
         opacity: .8;
+    }
+    @media only screen and (max-width: 700px) {
+        .item-info {
+            margin: 0;
+        }
     }
 </style>

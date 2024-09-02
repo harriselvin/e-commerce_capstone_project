@@ -10,11 +10,6 @@ const routes = [
     name: 'home',
     component: HomeView
   },
-  // {
-  //   path: '/shop',
-  //   name: 'shop',
-  //   component: ShopView
-  // },
   {
     path: '/shop/:category?',
     name: 'shop',
