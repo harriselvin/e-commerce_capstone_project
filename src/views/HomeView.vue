@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="we-offer">
-        <div class="offer-sec" :style="{'background-image': 'url(' + equipment.soccerField + ')'}">
+        <div class="offer-sec" :style="{'background-image': `url(${equipment.soccerField})`}">
           <div class="offer-box">
             <div class="offer-head">
               <h3>What We <br> Offer</h3>
@@ -58,8 +58,33 @@
       <div class="home-comp">
         <home-comp/>
       </div>
-      <div>
-
+      <div class="shop-category">
+        <div class="cat-title">
+          <h3>Shop By <br> Category</h3>
+        </div>
+        <div class="categories">
+          <div class="cat-balls" :style="{'background-image': `url(${equipment.ballCategory})`}">
+            <div class="balls">
+              <router-link :to="{name: 'shop', query: {category: 'balls'}}">
+                <button>Balls</button>
+              </router-link>
+            </div>
+          </div>
+          <div class="cat-boots" :style="{'background-image': `url(${equipment.bootCategory})`}">
+            <div class="boots">
+              <router-link :to="{name: 'shop', query: {category: 'boots'}}">
+                <button>Boots</button>
+              </router-link>
+            </div>
+          </div>
+          <div class="cat-jerseys" :style="{'background-image': `url(${equipment.jerseyCategory})`}">
+            <div class="jerseys">
+              <router-link :to="{name: 'shop', query: {category: 'jerseys'}}">
+                <button>Jerseys</button>
+              </router-link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -80,7 +105,10 @@ export default {
         soccerBall: 'https://img.freepik.com/free-photo/success-grass-soccer-ball-generated-by-ai_188544-9819.jpg',
         soccerField: 'https://c4.wallpaperflare.com/wallpaper/29/423/819/sports-football-field-night-light-goal-grayscale-photo-of-soccer-goal-wallpaper-preview.jpg',
         defending: 'https://st.depositphotos.com/1000423/2111/i/450/depositphotos_21113831-stock-photo-two-football-players-striking-the.jpg',
-        tackle: 'https://static.vecteezy.com/system/resources/previews/020/624/231/non_2x/soccer-players-with-soccerball-at-the-stadium-during-the-match-photo.jpg'
+        tackle: 'https://static.vecteezy.com/system/resources/previews/020/624/231/non_2x/soccer-players-with-soccerball-at-the-stadium-during-the-match-photo.jpg',
+        ballCategory: 'https://media.istockphoto.com/id/526823786/photo/intense-portrait-of-football-player-looking-at-the-ball.jpg?s=612x612&w=0&k=20&c=3nxdSyzBfNoEfPzeJkNdLdgYsetzGhC90MwkpTqvwZU=',
+        jerseyCategory: 'https://www.spized.com/media/b1/b1/89/1671449478/Trikotnummern-Fussball.jpg',
+        bootCategory: 'https://assets.adidas.com/images/w_940,f_auto,q_auto/1b185887757947d0ad278cf7cf753ef9_9366/JH9012_HM3_hover.jpg'
       }
     }
   },
@@ -152,12 +180,15 @@ export default {
     cursor: pointer;
     outline: none;
     border: none;
-    transition: .5s;
+    transition: .3s;
   }
   .shop-now-btn button:hover {
     background-color: white;
     color: orangered;
     border: 1px solid orangered;
+  }
+  .shop-now-btn button:active {
+    scale: .9;
   }
   .bicycle-img img {
     width: 100%;
@@ -185,7 +216,7 @@ export default {
     margin-right: 5em;
     color: white;
   }
-  .offer-head {
+  .offer-head, .cat-title {
     font-size: 2.5em;
     text-transform: uppercase;
   }
@@ -208,6 +239,57 @@ export default {
   .offer-list .stars {
     color: orangered;
     margin: -.2em 0;
+  }
+  .shop-category {
+    background-color: orangered;
+    margin: 1em 0;
+    padding: 0 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .cat-title {
+    text-align: right;
+    color: white;
+    padding: 1em 0 0;
+  }
+  .categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+    gap: 1em;
+    width: 100%;
+  }
+  .categories button {
+    padding: .2em 2em;
+    margin: 3em 0 0;
+    -webkit-text-stroke: 2px orangered;
+    color: white;
+    background-color: transparent;
+    backdrop-filter: blur(.2em);
+    border: 2px solid lightgrey;
+    border-radius: 5em;
+    font-size: 2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: .5s;
+  }
+  .categories button:hover {
+    background-color: lightgrey;
+  }
+  .categories button:active {
+    scale: .9;
+  }
+  .shop-category .cat-balls, .cat-boots, .cat-jerseys {
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 30em;
+    width: 100%;
+    object-fit: cover;
+    border: 2px solid lightgrey;
+  } 
+  .cat-jerseys {
+    margin: 0 0 5em;
   }
 
   @media only screen and (min-height: 701px) and (max-height: 900px)  {
@@ -238,6 +320,12 @@ export default {
       min-width: 80vh;
       margin: 0 0 -20em;
       overflow: hidden;
+    }
+    .shop-category {
+      min-width: 46em;
+    }
+    .categories {
+      grid-template-columns: repeat(auto-fit, minmax(30em, 1fr));
     }
   }
 </style>

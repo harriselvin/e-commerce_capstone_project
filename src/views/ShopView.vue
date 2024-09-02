@@ -7,7 +7,7 @@
       <shop-comp/>
       <div class="prod-sec">
         <div class="prod-box">
-          <div v-for="prods in productsData" :key="prods">
+          <div v-for="prods in filteredProducts" :key="prods">
             <card-comp :products="prods">
               <template #productsSlot>
                 <div class="products">
@@ -50,6 +50,14 @@ export default {
     productsData() {
       return this.$store.state.products
     },
+    filteredProducts() {
+      const category = this.$route.query.category
+      if (category) {
+        return this.productsData.filter(product => product.category === category)
+      } else {
+        return this.productsData
+      }
+    }
   },
   methods: {
     async getProducts() {
