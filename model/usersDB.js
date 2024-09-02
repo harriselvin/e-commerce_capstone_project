@@ -25,6 +25,4 @@ const getUserDB = async (id) => {
   }
 };
 
-// const 
-
 export { getUsersDB, getUserDB }
