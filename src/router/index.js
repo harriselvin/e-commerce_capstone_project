@@ -3,6 +3,12 @@ import HomeView from '../views/HomeView.vue'
 import ShopView from '../views/ShopView.vue'
 import ProductView from '../views/ProductView.vue'
 import BestSellerView from '@/views/BestSellerView.vue'
+import FaqView from '@/views/FaqView.vue'
+import TermsAndConditionsView from '@/views/TermsAndConditionsView.vue'
+import PrivacyPolicyView from '@/views/PrivacyPolicyView.vue'
+import ShippingPolicyView from '@/views/ShippingPolicyView.vue'
+import RefundPolicyView from '@/views/RefundPolicyView.vue'
+import CookiePolicyView from '@/views/CookiePolicyView.vue'
 
 const routes = [
   {
@@ -32,6 +38,36 @@ const routes = [
     path: '/bestSeller/:id',
     name: 'bestSeller',
     component: BestSellerView
+  },
+  {
+    path: '/faq',
+    name: 'faq',
+    component: FaqView
+  },
+  {
+    path: '/termsAndConditions',
+    name: 'termsAndConditions',
+    component: TermsAndConditionsView
+  },
+  {
+    path: '/privacyPolicy',
+    name: 'privacyPolicy',
+    component: PrivacyPolicyView
+  },
+  {
+    path: '/shippingPolicy',
+    name: 'shippingPolicy',
+    component: ShippingPolicyView
+  },
+  {
+    path: '/refundPolicy',
+    name: 'refundPolicy',
+    component: RefundPolicyView
+  },
+  {
+    path: '/cookiePolicy',
+    name: 'cookiePolicy',
+    component: CookiePolicyView
   },
 ]
 
