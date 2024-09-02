@@ -82,16 +82,36 @@
                     <h4>Menu</h4>
                 </div>
                 <div class="list-group-items">
-                    <p class="list-item">Shop</p>
-                    <p class="list-item">Balls</p>
-                    <p class="list-item">Boots</p>
-                    <p class="list-item">Jerseys</p>
-                    <p class="list-item">FAQ</p>
-                    <p class="list-item">Terms & Conditions</p>
-                    <p class="list-item">Privacy Policy</p>
-                    <p class="list-item">Shipping Policy</p>
-                    <p class="list-item">Refund Policy</p>
-                    <p class="list-item">Cookie Policy</p>
+                    <router-link class="menu-link" :to="{name: 'shop'}">
+                        <p class="list-item">Shop</p>
+                    </router-link>
+                    <router-link class="menu-link" :to="{name: 'shop', query: {category: 'balls'}}">
+                        <p class="list-item">Balls</p>
+                    </router-link>
+                    <router-link class="menu-link" :to="{name: 'shop', query: {category: 'boots'}}">
+                        <p class="list-item">Boots</p>
+                    </router-link>
+                    <router-link class="menu-link" :to="{name: 'shop', query: {category: 'jerseys'}}">
+                        <p class="list-item">Jerseys</p>
+                    </router-link>
+                    <router-link class="menu-link" :to="{name: 'faq'}">
+                        <p class="list-item">FAQ</p>
+                    </router-link>
+                    <router-link class="menu-link" :to="{name: 'termsAndConditions'}">
+                        <p class="list-item">Terms & Conditions</p>
+                    </router-link>
+                    <router-link class="menu-link" :to="{name: 'privacyPolicy'}">
+                        <p class="list-item">Privacy Policy</p>
+                    </router-link>
+                    <router-link class="menu-link" :to="{name: 'shippingPolicy'}">
+                        <p class="list-item">Shipping Policy</p>
+                    </router-link>
+                    <router-link class="menu-link" :to="{name: 'refundPolicy'}">
+                        <p class="list-item">Refund Policy</p>
+                    </router-link>
+                    <router-link class="menu-link" :to="{name: 'cookiePolicy'}">
+                        <p class="list-item">Cookie Policy</p>
+                    </router-link>
                 </div>
             </div>
         </div>
@@ -215,6 +235,14 @@ export default {
     }
     .social-links a {
         color: white;
+    }
+    .list-group-items .menu-link {
+        text-decoration: none;
+        color: white;
+        transition: .2s;
+    }
+    .list-group-items .menu-link:hover {
+        opacity: .7;
     }
     @media only screen and (max-width: 900px)  {
         .footer-container {
