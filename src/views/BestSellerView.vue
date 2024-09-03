@@ -59,6 +59,9 @@
                         </template>
                     </card-comp>
                 </div>
+                <div class="prod-footer">
+                    <footer-comp/>
+                </div>
             </div>
             <div v-else class="error-seller">
                 <p>Failed to Fetch Best Seller Data</p>
@@ -70,6 +73,7 @@
 import CardComp from '@/components/CardComp.vue';
 import { toRaw } from 'vue';
 import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
+import FooterComp from '@/components/FooterComp.vue';
 
 export default {
     data() {
@@ -93,7 +97,8 @@ export default {
     },
     components: {
         CardComp,
-        PageSpinnerComp
+        PageSpinnerComp,
+        FooterComp
     },
     computed: {
         sellerData() {

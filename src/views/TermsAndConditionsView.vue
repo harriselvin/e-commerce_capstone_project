@@ -119,7 +119,4 @@ export default {
     .terms-subheading span {
         font-weight: bold;
     }
-    .terms-footer {
-        margin: 5em -.5em 0;
-    }
 </style>

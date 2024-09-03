@@ -9,6 +9,9 @@ import PrivacyPolicyView from '@/views/PrivacyPolicyView.vue'
 import ShippingPolicyView from '@/views/ShippingPolicyView.vue'
 import RefundPolicyView from '@/views/RefundPolicyView.vue'
 import CookiePolicyView from '@/views/CookiePolicyView.vue'
+import ContactView from '@/views/ContactView.vue'
+import CartView from '@/views/CartView.vue'
+import LoginView from '@/views/LoginView.vue'
 
 const routes = [
   {
@@ -68,6 +71,21 @@ const routes = [
     path: '/cookiePolicy',
     name: 'cookiePolicy',
     component: CookiePolicyView
+  },
+  {
+    path: '/contact',
+    name: 'contact',
+    component: ContactView
+  },
+  {
+    path: '/cart',
+    name: 'cart',
+    component: CartView
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: LoginView
   },
 ]
 

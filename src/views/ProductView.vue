@@ -62,6 +62,9 @@
                         </template>
                     </card-comp>
                 </div>
+                <div class="prod-footer">
+                    <footer-comp/>
+                </div>
             </div>
             <div v-else class="error-product">
                 <p>Failed to Fetch Product Data</p>
@@ -73,6 +76,7 @@
 import CardComp from '@/components/CardComp.vue';
 import { toRaw } from 'vue';
 import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
+import FooterComp from '@/components/FooterComp.vue';
 
 export default {
     data() {
@@ -96,7 +100,8 @@ export default {
     },
     components: {
         CardComp,
-        PageSpinnerComp
+        PageSpinnerComp,
+        FooterComp
     },
     computed: {
         productData() {
@@ -243,6 +248,9 @@ export default {
     }
     .desc-dropdown:hover {
         opacity: .8;
+    }
+    .prod-footer {
+        margin: 5em 0 0;
     }
     .error-product {
         margin: 10em 0 0;
