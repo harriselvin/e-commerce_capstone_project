@@ -28,14 +28,35 @@ const getProductDB = async (id) => {
 const addProductDB = async () => {
   try {
     let [data] = await pool.query(`
-      INSERT INTO products (prodName, prodDescription, prodPrice, prodImage)
-      VALUES (?, ?, ?, ?)
-      `, [prodName, prodDescription, prodPrice, prodImage]);
-      return data;
-    } catch (error) {
-      console.error('Error adding product:', error);
-      throw error;
-    }
+      INSERT INTO products (prodName, price, quantity, category, prodUrl, prodDesc, prodInfo)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+      `, [prodName, price, quantity, category, prodUrl, prodDesc, prodInfo]);
+    return data;
+  } catch (error) {
+    console.error('Error adding product:', error);
+    throw error;
+  }
 }
 
-export { getProductsDB, getProductDB, addProductDB }
+const deleteProductDB = async (id) => {
+  await pool.query(`
+    DELETE FROM products
+    WHERE prodID = ?
+    `, [id])
+}
+
+const updateProductDB = async (prodName, price, quantity, category, prodUrl, prodDesc, prodInfo, id) => {
+  await pool.query(`
+    UPDATE products
+    SET prodName = ?,
+    price = ?,
+    quantity = ?,
+    category = ?,
+    prodUrl = ?,
+    prodDesc = ?,
+    prodInfo = ?
+    WHERE prodID = ?
+    `, [prodName, price, quantity, category, prodUrl, prodDesc, prodInfo, id])
+}
+
+export { getProductsDB, getProductDB, addProductDB, deleteProductDB, updateProductDB }

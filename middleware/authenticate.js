@@ -2,6 +2,7 @@ import { compare } from "bcrypt";
 import jwt from 'jsonwebtoken';
 import { config } from "dotenv";
 import { loginUserDB } from "../model/usersDB.js";
+import { nextTick } from "vue";
 
 config()
 
@@ -41,4 +42,20 @@ const verifyToken = (req, res, next) => {
     })
 }
 
-export { checkUser, verifyToken }
+const authenticateToken = (req, res, next) => {
+    const token = req.headers('Authorization')
+
+    if (!token) {
+        return res.status(401).json({ error: 'Access denied. No token provided' })
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.SECRET_KEY)
+        req.user = decoded
+        next()
+    } catch (err) {
+        return res.status(400).send({ error: 'Invalid token' })
+    }
+}
+
+export { checkUser, verifyToken, authenticateToken }
