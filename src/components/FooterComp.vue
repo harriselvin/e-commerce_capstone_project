@@ -17,7 +17,7 @@
                         </p>
                     </div>
                 </div>
-                <form class="subscribe" @submit="formSubscription($event)" action="https://formsubmit.co/harriselvin6@gmail.com" method="POST" enctype="multipart/form-data" ref="form">
+                <form class="subscribe" @submit="notify($event)" action="https://formsubmit.co/harriselvin6@gmail.com" method="POST" enctype="multipart/form-data" ref="form">
                     <p v-if="errors.length">
                         <b>
                             Please correct the following error(s):
@@ -122,6 +122,9 @@
     </div>
 </template>
 <script>
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
+
 export default {
     data() {
         return {
@@ -129,13 +132,23 @@ export default {
             subscribe: '',
             errors: [],
             isFocused: false,
+            toastId: '',
+            toastIds: [],
+            name: "App",
+            setup() {
+                const notify = () => {
+                toast("Wow so easy !", {
+                    autoClose: 1000,
+                }); // ToastOptions
+                }
+                return { notify };
+            }
         }
     },
     methods: {
-        formSubscription(event) {
+        notify(event) {
             this.errors = []
 
-            // if (this.subscribe) return true
             if (!this.subscribe) {
                 this.errors.push("Email is required")
             } else if (!this.isValidEmail) {
@@ -144,6 +157,17 @@ export default {
 
             if (this.errors.length) {
                 event.preventDefault()
+
+            } else {
+                const toastId = toast.info(
+                '!Subscribed successfully',
+                {
+                rtl: true,
+                limit: 3,
+                position: toast.POSITION.TOP_CENTER,
+                },
+                );
+                this.toastIds.push(toastId);
             }
         }
     },

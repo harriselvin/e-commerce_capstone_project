@@ -52,9 +52,18 @@ export default {
     height: 100%;
   }
 
+  @media only screen and (min-width: 301px) and (max-width: 640px) {
+    .image img, .text-sec {
+      min-width: 43em;
+    }
+  }
+
   @media only screen and (max-width: 300px) {
     .shop-section {
       margin-left: 2em;
+    }
+    .image img, .text-sec {
+      min-width: 40em;
     }
   }
 </style>
