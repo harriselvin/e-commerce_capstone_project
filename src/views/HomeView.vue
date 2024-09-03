@@ -207,6 +207,7 @@ export default {
     min-height: 90vh; 
     background-size: 100%;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     object-fit: cover;
     overflow: hidden;
     margin: -.25em 0 0;
@@ -325,6 +326,7 @@ export default {
       min-width: 80vh;
       margin: 0 0 -20em;
       overflow: hidden;
+      background-attachment: scroll;
     }
     .shop-category {
       min-width: 43em;
