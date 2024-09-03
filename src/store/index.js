@@ -1,5 +1,9 @@
 import axios from 'axios'
 import { createStore } from 'vuex'
+// import { useCookies } from 'vue3-cookies'
+
+axios.defaults.withCredentials = true
+// axios.defaults.headers = $cookies.get('token')
 
 const apiLink = 'https://e-commerce-capstone-project.onrender.com/'
 /* eslint-disable */
@@ -10,7 +14,7 @@ export default createStore({
     product: null,
     bestSellers: null,
     bestSeller: null,
-    faq: null
+    faq: null,
   },
   getters: {
   },
@@ -50,6 +54,11 @@ export default createStore({
     }
   },
   actions: {
+    async addUser({commit}, info) {
+      const data = await axios.post(`${apiLink}register`, info)
+      console.log('User data:', data);
+      
+    },
     async getProducts({commit}) {
       try {
         const {data} = await axios.get(`${apiLink}items`)
