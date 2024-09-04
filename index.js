@@ -5,6 +5,7 @@ import prodRouter from './routes/productsRoute.js'
 import faqRouter from './routes/faqRoute.js'
 import sellerRoute from './routes/bestSellersRoute.js'
 import cartRouter from './routes/cartRoute.js'
+import cookieParser from 'cookie-parser'
 
 const port = process.env.PORT || 2000
 const app = express()
@@ -14,6 +15,7 @@ app.use(cors({
     credentials: true
 }))
 
+app.use(cookieParser())
 
 app.use(express.static('public'))
 app.use(express.json())
