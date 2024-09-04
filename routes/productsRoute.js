@@ -4,10 +4,10 @@ import { verifyToken } from '../middleware/authenticate.js';
 
 const prodRouter = express.Router()
 
-prodRouter.get('/items', fetchProducts)
-        .get('/item/:id', fetchProduct)
-        .post('/items', addProduct)
-        .put('item/:id', updateProduct)
-        .delete('item/:id', deleteProduct)
+prodRouter.get('/items', verifyToken, fetchProducts)
+        .get('/item/:id', verifyToken, fetchProduct)
+        .post('/items', verifyToken, addProduct)
+        .put('item/:id', verifyToken, updateProduct)
+        .delete('item/:id', verifyToken, deleteProduct)
 
 export default prodRouter
