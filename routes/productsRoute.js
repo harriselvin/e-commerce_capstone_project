@@ -1,15 +1,13 @@
 import express from 'express';
 import { fetchProducts, fetchProduct, addProduct, deleteProduct, updateProduct } from '../controller/productsFunctions.js'
-import { authenticateToken } from '../middleware/authenticate.js'
+import { verifyToken } from '../middleware/authenticate.js';
 
 const prodRouter = express.Router()
 
-prodRouter.use(authenticateToken)
-
 prodRouter.get('/items', fetchProducts)
         .get('/item/:id', fetchProduct)
-        .post('/items', addProduct)
-        .put('item/:id', updateProduct)
-        .delete('item/:id', deleteProduct)
+        .post('/items', verifyToken, addProduct)
+        .put('item/:id', verifyToken, updateProduct)
+        .delete('item/:id', verifyToken, deleteProduct)
 
 export default prodRouter
