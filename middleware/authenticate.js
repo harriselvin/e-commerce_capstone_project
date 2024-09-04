@@ -2,7 +2,7 @@ import { compare } from "bcrypt";
 import jwt from 'jsonwebtoken';
 import { config } from "dotenv";
 import { loginUserDB } from "../model/usersDB.js";
-import { nextTick } from "vue";
+
 
 config()
 
