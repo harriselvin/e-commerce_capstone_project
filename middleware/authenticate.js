@@ -34,11 +34,21 @@ const verifyToken = (req, res, next) => {
     console.log(cookie);
     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
         if (err) {
-            res.json({ message: 'Token has expired' })
-            return
+            // If the token is expired, refresh it
+            if (err.name === 'TokenExpiredError') {
+                const email = decoded.email;
+                const newToken = jwt.sign({ email: email }, process.env.SECRET_KEY, { expiresIn: '1h' });
+                res.cookie('token', newToken);
+                req.body.user = decoded;
+                next();
+            } else {
+                res.json({ message: 'Invalid token' });
+            }
+
+        } else {
+            req.body.user = decoded.userProfile
+            next()
         }
-        req.body.user = decoded.userProfile
-        next()
     })
 }
 
