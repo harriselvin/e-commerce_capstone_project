@@ -12,6 +12,7 @@ import CookiePolicyView from '@/views/CookiePolicyView.vue'
 import ContactView from '@/views/ContactView.vue'
 import CartView from '@/views/CartView.vue'
 import LoginView from '@/views/LoginView.vue'
+import AdminView from '@/views/AdminView.vue'
 
 const routes = [
   {
@@ -86,6 +87,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginView
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: AdminView
   },
 ]
 

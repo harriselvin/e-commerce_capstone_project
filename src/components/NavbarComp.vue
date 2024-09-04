@@ -11,16 +11,29 @@
         <router-link to="/about">About</router-link> |
         <router-link to="/contact">Contact</router-link> |
         <router-link to="/cart">Cart</router-link> |
-        <router-link to="/login">Login</router-link> 
+        <router-link to="/admin">Admin</router-link> |
+        <div v-if="!$cookies.get('token')">
+          <router-link to="/login">Login</router-link> 
+        </div>
+        <div v-else>
+          <a class="logout" @click="logout()">Log Out</a>
+        </div>
       </div>
     </nav>
   </div>
 </template>
 <script>
+
 export default {
   data() {
     return {
       lightLogo: 'https://harriselvin.github.io/hostedImages/Images/Light_Mode_PP_Logo.png',
+    }
+  },
+  methods: {
+    logout() {
+      this.$cookies.remove('token')
+      location.reload()
     }
   }
 }
@@ -51,8 +64,9 @@ export default {
     color: orangered;
   }
 
-  .navbar a.router-link-exact-active {
+  .navbar a.router-link-exact-active, .logout {
     color: orangered;
+    cursor: pointer;
   }
   .navbar .logo-img {
     width: 3em;

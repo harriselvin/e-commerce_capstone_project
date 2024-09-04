@@ -244,7 +244,7 @@ export default {
         color: black;
     }
     .invalid-email {
-        outline: 2px solid red
+        outline: 2px solid red;
     }
     .copyright {
         padding: 1em 0;

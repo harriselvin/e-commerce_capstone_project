@@ -79,9 +79,13 @@ export default {
   },
   computed: {
     productsData() {
+      console.log('Products state:', this.$store.state.products);
+      
       return this.$store.state.products
     },
     filteredProducts() {
+      console.log('Filtered Products:', this.productsData);
+      
       const category = this.$route.query.category
       if (category) {
         return this.productsData.filter(product => product.category === category)
@@ -91,17 +95,25 @@ export default {
     },
     /* eslint-disable */
     searchProducts() {
-      const search = this.searchInput.toLowerCase()
-      return this.productsData.filter(product => {
-        const productName = product.prodName.toLowerCase()
-        return productName.includes(search)
-      })
+      console.log('Search products:', this.productsData);
+      
+      if (Array.isArray(this.productsData)) {
+        const search = this.searchInput.toLowerCase()
+        return this.filteredProducts.filter(product => {
+          const productName = product.prodName.toLowerCase()
+          return productName.includes(search)
+        })
+      } else {
+        return []
+      }
     }
   },
   methods: {
     async getProducts() {
       try {
+        console.log('Dispatching getProducts action');
         await this.$store.dispatch('getProducts')
+        console.log('Products state:', this.$store.state.products);
 
         this.loading = false
       } catch (error) {
@@ -109,9 +121,9 @@ export default {
       }
     },
   },
-  mounted() {
+  async mounted() {
     try {
-      this.getProducts()
+      await this.getProducts()
     } catch (error) {
       console.error("Failed to fetch product data:", error);
     }
