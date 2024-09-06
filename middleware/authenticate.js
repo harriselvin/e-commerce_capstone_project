@@ -29,9 +29,7 @@ const checkUser = async (req, res, next) => {
     }
 }
 
-const verifyToken = (req, res, next) => {
-    console.log(req.cookies);
-    
+const verifyToken = (req, res, next) => {    
     const cookie = req.cookies.token
 
     let token = cookie // && cookie.split('=')[1]

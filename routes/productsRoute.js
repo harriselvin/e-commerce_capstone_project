@@ -4,8 +4,8 @@ import { verifyToken } from '../middleware/authenticate.js';
 
 const prodRouter = express.Router()
 
-prodRouter.get('/items', verifyToken, fetchProducts)
-        .get('/item/:id', verifyToken, fetchProduct)
+prodRouter.get('/items', fetchProducts)
+        .get('/item/:id', fetchProduct)
         .post('/items', verifyToken, addProduct)
         .put('item/:id', verifyToken, updateProduct)
         .delete('item/:id', verifyToken, deleteProduct)
