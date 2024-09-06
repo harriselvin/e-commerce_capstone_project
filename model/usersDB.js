@@ -31,15 +31,15 @@ const getUserDB = async (id) => {
   }
 };
 
-const addUserDB = async (firstName, lastName, age, gender, country, userRole, email, password, userProfile) => {
-  if (!firstName || !lastName || !age || !gender || !country || !userRole || !email || !password || !userProfile) {
+const addUserDB = async (firstName, email, password) => {
+  if (!firstName ||!email || !password) {
     throw new Error('All user fields are required');
   }
   try {
     await pool.query(`
-      INSERT INTO users (firstName, lastName, age, gender, country, userRole, email, password, userProfile)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, [firstName, lastName, age, gender, country, userRole, email, password, userProfile]);
+      INSERT INTO users (firstName, email, password)
+      VALUES (?, ?, ?)
+      `, [firstName, email, password]);
   } catch (error) {
     console.error('Error adding user:', error);
     throw new Error(`Failed to add user: ${error.message}`);

@@ -27,8 +27,8 @@ const fetchUser = async (req, res) => {
 
 const addUser = async (req, res) => {
   try {
-    const { firstName, lastName, age, gender, country, userRole, email, password, userProfile } = req.body;
-    if (!firstName || !lastName || !age || !gender || !country || !userRole || !email || !password || !userProfile) {
+    const { firstName, email, password } = req.body;
+    if (!firstName || !email || !password) {
       res.status(400).send('All user fields are required');
     } else {
       hash(password, 10, async (err, hashedP) => {
@@ -36,7 +36,7 @@ const addUser = async (req, res) => {
           console.error('Error hashing password:', err);
           res.status(500).send('Failed to add user');
         } else {
-          await addUserDB(firstName, lastName, age, gender, country, userRole, email, hashedP, userProfile);
+          await addUserDB(firstName, email, hashedP);
           res.status(201).send('User was successfully added');
         }
       });
