@@ -79,13 +79,9 @@ export default {
   },
   computed: {
     productsData() {
-      console.log('Products state:', this.$store.state.products);
-      
       return this.$store.state.products
     },
     filteredProducts() {
-      console.log('Filtered Products:', this.productsData);
-      
       const category = this.$route.query.category
       if (category) {
         return this.productsData.filter(product => product.category === category)
@@ -93,10 +89,7 @@ export default {
         return this.productsData
       }
     },
-    /* eslint-disable */
     searchProducts() {
-      console.log('Search products:', this.productsData);
-      
       if (Array.isArray(this.productsData)) {
         const search = this.searchInput.toLowerCase()
         return this.filteredProducts.filter(product => {
@@ -111,15 +104,18 @@ export default {
   methods: {
     async getProducts() {
       try {
-        console.log('Dispatching getProducts action');
         await this.$store.dispatch('getProducts')
-        console.log('Products state:', this.$store.state.products);
 
         this.loading = false
       } catch (error) {
         console.error("Failed to fetch product data:", error);
       }
     },
+    showModal() {
+            // Toggle the modal container and modal classes
+            document.querySelector('.modal-container').classList.toggle('show');
+            document.querySelector('.modal').classList.toggle('show');
+        }
   },
   async mounted() {
     try {

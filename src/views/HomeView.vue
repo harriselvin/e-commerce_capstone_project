@@ -3,7 +3,7 @@
     <div v-if="loading">
       <page-spinner-comp/>
     </div>
-    <div>
+    <div v-else>
       <div class="home-head">
         <div class="home-store">
           <div class="soccer-ball-img">

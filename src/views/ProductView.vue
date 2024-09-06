@@ -31,7 +31,7 @@
                                         <h3>{{ productData.prodName }}</h3>
                                     </div>
                                     <div class="prod-price">
-                                        <p>R{{ productData.price }}</p>
+                                        <p>R <span class="price">{{ totalPrice }}</span></p>
                                     </div>
                                     <div class="prod-quan">
                                         <p>Quantity</p>
@@ -40,7 +40,7 @@
                                         min="1">
                                     </div>
                                     <div class="prod-btn">
-                                        <button>Add to Cart</button>
+                                        <button @click="openModal">Add to Cart</button>
                                     </div>
                                     <div class="desc-boxes">
                                         <div v-for="(desc, index) in descriptions" :key="index" class="prod-desc">
@@ -62,6 +62,9 @@
                         </template>
                     </card-comp>
                 </div>
+                <div>
+                    <cart-modal-comp :show="isModalOpen" @close="closeModal"/>
+                </div>
                 <div class="prod-footer">
                     <footer-comp/>
                 </div>
@@ -76,6 +79,7 @@
 import CardComp from '@/components/CardComp.vue';
 import { toRaw } from 'vue';
 import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
+import CartModalComp from '@/components/CartModalComp.vue';
 import FooterComp from '@/components/FooterComp.vue';
 
 export default {
@@ -84,6 +88,7 @@ export default {
             productId: null,
             loading: true,
             quantity: 1,
+            isModalOpen: false,
             expandedIndex: 0,
             descriptions: [
                 { title: "PRODUCT INFO", content: "" },
@@ -101,11 +106,15 @@ export default {
     components: {
         CardComp,
         PageSpinnerComp,
+        CartModalComp,
         FooterComp
     },
     computed: {
         productData() {
           return this.$store.state.product
+        },
+        totalPrice() {
+            return (this.productData.price * this.quantity).toFixed(2)
         }
     },
     methods: {
@@ -137,6 +146,16 @@ export default {
         toggleDesc(index) {
             this.expandedIndex = this.expandedIndex === index ? null : index
         },
+        openModal() {
+            this.$store.dispatch('addToCart', {
+                product: this.productData,
+                quantity: this.quantity
+            })
+            this.isModalOpen = true
+        },
+        closeModal() {
+            this.isModalOpen = false
+        }
     },
     mounted() {
         this.productId = this.$route.params.id

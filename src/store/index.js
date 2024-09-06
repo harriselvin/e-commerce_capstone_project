@@ -2,18 +2,21 @@
 import axios from 'axios'
 import { createStore } from 'vuex'
 import router from '@/router'
+import VueCookies from 'vue-cookies'
 
 axios.defaults.withCredentials = true
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
+  if (parts.length === 2) {
+    return parts.pop().split(';').shift();
+  }
 }
 
 const apiLink = 'https://e-commerce-capstone-project.onrender.com/'
 
-axios.defaults.headers = { 'Authorization': `Bearer ${getCookie('token')}` }
+axios.defaults.headers.Authorization = `Bearer ${getCookie('token')}` 
 
 export default createStore({
   state: {
@@ -22,7 +25,11 @@ export default createStore({
     bestSellers: [],
     bestSeller: null,
     faq: null,
-    error: null
+    error: null,
+    cart: [],
+    cartItems: [],
+    userId: null,
+    isAuthenticated: false
   },
   getters: {
   },
@@ -62,14 +69,29 @@ export default createStore({
     },
     setError(state, payload) {
       state.error = payload
+    },
+    SetAddToCart(state, {product, quantity}) {
+      const cartItem = state.cart.find(item => item.product.id === product.id);
+      if (cartItem) {
+        cartItem.quantity += quantity
+      } else {
+        state.cart.push({ product, quantity })
+      }
+    },
+    setCartItems(state, payload) {
+      state.cartItems = payload
+    },
+    setUserId(state, userId) {
+      state.userId = userId
+    },
+    setAuthentication(state, status) {
+      state.isAuthenticated = status
     }
   },
   actions: {
     async getProducts({commit}) {
       try {
         const {data} = await axios.get(`${apiLink}items`)
-        console.log('Received products data:',data);
-        
         commit('setProducts', data)
       } catch (error) {
         if (error.response.status === 401 && error.response.data.message === 'Token has expired') {
@@ -120,28 +142,103 @@ export default createStore({
         commit('setError', error.message)
       }
     },
-    async addUser({commit}, info) {
-      const data = await axios.post(`${apiLink}register`, info)
-      console.log('User data:', data);
-      
-      document.cookie = `token=${data.token};path=/;max-age=3600`;
+    async addUser({commit}, { firstName, email, password }) {
+      try {
+        const response = await axios.post(`${apiLink}register`, {
+          firstName,
+          email,
+          password
+        })
+        
+        document.cookie = `token=${data.token};path=/;max-age=3600`;
 
-      console.log(data.token);
-      // await router.push('/admin')
+        console.log('User added successfully:', response.data);
+        
+        commit('SET_USER', response.data);
+      } catch (error) {
+        console.error('Sign up Error:', error);
+        commit('setError', error.message)
+      }
     },
     async loginUser({commit}, info) {
-      console.log(info);
-      
-      let {data} = await axios.post(`${apiLink}login`, info)
-      console.log(data);
+      try {
+        let {data} = await axios.post(`${apiLink}login`, info)
+        console.log(data);
 
-      this.post = data
+        commit('setUserId', { id: true, username: info.username });
+        await router.push('/');
+        location.reload();
+      } catch (error) {
+        console.error('Login error:', error);
+        this.errors.push('Invalid email or password')
+      }      
       
-      document.cookie = `token=${data.token};path=/;max-age=3600`;
-
-      await router.push('/')
-      location.reload()
     },
+    async addToCart({commit, state}, {product, quantity}) {
+      if (!state.userId) {
+        return alert('Please login to add product to cart')
+      }
+      try {
+        // retrieve user ID from cookie or store/VueX state
+        const userId = getCookie('userId') || state.userId 
+        const token = getCookie('token')
+        const axiosInstance = axios.create({
+          headers: {
+            Authorization: `Bearer ${token}`
+            }
+        })
+        // axios.defaults.headers.Authorization = `Bearer ${getCookie('token')}`
+        const {data} = await axiosInstance.post(`${apiLink}user/${userId}/cart`, {
+          product: product.id,
+          quantity
+        })
+        commit('SetAddToCart', {product, quantity})
+      } catch (error) {
+        console.error('Error adding item to cart:', error);
+      }
+    },
+    async getCartItems({commit, state}) {
+      try {
+        // retrieve user ID from cookie or store/VueX state
+        const userId = getCookie('userId') || state.userId 
+        const token = getCookie('token')
+        const axiosInstance = axios.create({
+          headers: {
+            Authorization: `Bearer ${token}`
+            }
+        })
+        const {data} = await axiosInstance.get(`${apiLink}user/${userId}/carts`)
+        commit('setCartItems', data)
+      } catch (error) {
+        console.error( 'Error fetching cart items:', error);
+      }
+    },
+    async login({commit}, { email, password }) {
+      try {
+        // Make the login request to the backend
+        const response = await axios.post('/api/login', { email, password });
+        
+        // If login is successful, get the token
+        const token = response.data.token;
+
+        // Set the token in cookies
+        VueCookies.set('token', token, '1d'); // Store token for 1 day
+        commit('setAuthentication', true); // Update the authentication status
+
+      } catch (error) {
+        console.error('Login error:', error.response || error);
+        commit('setAuthentication', false);
+        throw error; // Propagate error for handling in component
+      }
+    },
+    logout({commit}) {
+      VueCookies.remove('token')
+      commit('setAuthentication', false)
+    },
+    checkAuth({commit}) {
+      const token = VueCookies.get('token')
+      commit('setAuthentication', !!token)
+    }
   },
   modules: {
   }

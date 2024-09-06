@@ -12,11 +12,13 @@
         <router-link to="/contact">Contact</router-link> |
         <router-link to="/cart">Cart</router-link> |
         <router-link to="/admin">Admin</router-link> |
-        <div v-if="!$cookies.get('token')">
+        <div v-if="!isAuthenticated">
           <router-link to="/login">Login</router-link> 
         </div>
         <div v-else>
-          <a class="logout" @click="logout()">Log Out</a>
+          <a class="logout" @click="logout()">
+              Log Out
+          </a>
         </div>
       </div>
     </nav>
@@ -30,11 +32,19 @@ export default {
       lightLogo: 'https://harriselvin.github.io/hostedImages/Images/Light_Mode_PP_Logo.png',
     }
   },
+  computed: {
+    isAuthenticated() {
+      return this.$store.state.isAuthenticated
+    }
+  },
   methods: {
     logout() {
-      this.$cookies.remove('token')
-      location.reload()
+      this.$store.dispatch('logout')
+      this.$router.push('/login')
     }
+  },
+  mounted() {
+    this.$store.dispatch('checkAuth')
   }
 }
 </script>

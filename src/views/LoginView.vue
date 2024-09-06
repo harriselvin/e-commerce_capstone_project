@@ -11,7 +11,7 @@
                 <b>
                     Please correct the following error(s):
                 </b>
-                <ul>
+                <ul class="error-list">
                     <li v-for="error in errors" :key="error">
                         {{ error }}
                     </li>
@@ -51,7 +51,7 @@
                 <b>
                     Please correct the following error(s):
                 </b>
-                <ul>
+                <ul class="error-list">
                     <li v-for="error in errors" :key="error">
                         {{ error }}
                     </li>
@@ -80,12 +80,12 @@
             </div>
             <div class="login">
                 <div class="input-group button">
-                    <button class="login-btn" @submit="addUser">Sign Up</button>
+                    <button class="login-btn" @click.prevent="addUser">Sign Up</button>
                 </div>
             </div>
             <div>
                 <div>
-                    <p>Already have an account? <span class="sign-up" @click="signUp = !signUp">Sign In</span></p>
+                    <p>Already have an account? <span class="sign-up" @click.prevent="signUp = !signUp">Sign In</span></p>
                 </div>
             </div>
         </form>
@@ -123,30 +123,72 @@ export default {
                 this.passwordIcon = 'fa-eye';
             }
         },
-        addUser() {
-        this.$store.dispatch('addUser', this.$data)
+        async addUser() {
+            this.errors = []
+
+            if (!this.firstName) {
+                this.errors.push('Name is required.')
+            }
+            if (!this.email) {
+                this.errors.push('Email is required.')
+            } else if (!this.isValidEmail) {
+                this.errors.push('Invalid email format.')
+            }
+            if (!this.password) {
+                this.errors.push('Password is required.')
+            }
+
+            if (this.errors.length > 0) {
+                return
+            }
+
+            try {
+                await this.$store.dispatch('addUser', {
+                    firstName: this.firstName,
+                    email: this.email,
+                    password: this.password
+                })
+                await this.$router.push('/admin')
+            } catch (error) {
+                console.error('Signup error:', error.response || error);
+                if (error.response && error.response.data) {
+                    this.errors.push(`Error: ${error.response.data.message || 'An error occurred'}`);
+                } else {
+                    this.errors.push('Failed to sign up. Please try again.');
+                }
+            }
         },
-        loginUser() {
-            this.$store.dispatch('loginUser', { email: this.username, password: this.loginPassword })
+        async loginUser() {
+            this.errors = []
 
-            // this.errors = []
+            try {
+                await this.$store.dispatch('loginUser', { 
+                    email: this.username, 
+                    password: this.loginPassword 
+                })
 
-            // if (!this.login) {
-            //     this.errors.push("Email is required")
-            // } else if (!this.isValidEmail) {
-            //     this.errors.push("Invalid email")
-            // }
-
-            // if (this.errors.length) {
-            //     event.preventDefault()
-
-            // }
+                this.$store.dispatch('checkAuth')
+                
+                await this.$router.push('/')
+                location.reload()
+            } catch (error) {
+                console.error('Login error:', error);
+                this.errors.push('Invalid email or password')
+            }
+        },
+        logout() {
+            this.$store.dispatch('logout');
+            this.$router.push('/login');
         }
-    },computed: {
+    },
+    computed: {
         isValidEmail() {
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-            return emailRegex.test(this.login)
+            return emailRegex.test(this.email)
         }
+    },
+    mounted() {
+        this.$store.dispatch('checkAuth');
     }
 }
 </script>
@@ -228,6 +270,9 @@ export default {
         right: 10px;
         cursor: pointer;
         color: #9e9e9e;
+    }
+    .error-list li {
+        list-style: none;
     }
     .sign-up {
         font-weight: bold;
