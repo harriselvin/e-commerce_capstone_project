@@ -34,7 +34,8 @@
                                         <p>Quantity</p>
                                         <input @input="updateQuantity($event)" type="number" name="quantity"
                                         :disabled="quantityDisable()"
-                                        min="1">
+                                        min="1"
+                                        value="1">
                                     </div>
                                     <div class="prod-btn">
                                         <button>Add to Cart</button>

@@ -16,7 +16,7 @@
           <router-link to="/login">Login</router-link> 
         </div>
         <div v-else>
-          <a class="logout" @click="logout()">
+          <a class="logout" @click="logout">
               Log Out
           </a>
         </div>

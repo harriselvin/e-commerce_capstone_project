@@ -70,12 +70,12 @@ export default createStore({
     setError(state, payload) {
       state.error = payload
     },
-    SetAddToCart(state, {product, quantity}) {
+    setAddToCart(state, item) {
       const cartItem = state.cart.find(item => item.product.id === product.id);
       if (cartItem) {
         cartItem.quantity += quantity
       } else {
-        state.cart.push({ product, quantity })
+        state.cart.push(item)
       }
     },
     setCartItems(state, payload) {
@@ -89,7 +89,7 @@ export default createStore({
     }
   },
   actions: {
-    async getProducts({commit}) {
+    async getProducts({ commit }) {
       try {
         const {data} = await axios.get(`${apiLink}items`)
         commit('setProducts', data)
@@ -105,7 +105,7 @@ export default createStore({
         }
       }
     },
-    async getProduct({commit}, id) {
+    async getProduct({ commit }, id) {
       try {
         const {data} = await axios.get(`${apiLink}item/${id}`)
         commit('setProduct', data)
@@ -114,7 +114,7 @@ export default createStore({
         commit('setError', error.message)
       }
     },
-    async getBestSellers({commit}) {
+    async getBestSellers({ commit }) {
       try {
         const {data} = await axios.get(`${apiLink}bestSellers`)
         commit('setBestSellers', data)
@@ -123,7 +123,7 @@ export default createStore({
         commit('setError', error.message)
       }
     },
-    async getBestSeller({commit}, id) {
+    async getBestSeller({ commit }, id) {
       try {
         const {data} = await axios.get(`${apiLink}bestSeller/${id}`)
         commit('setBestSeller', data)
@@ -133,7 +133,7 @@ export default createStore({
         commit('setError', error.message)
       }
     },
-    async getFaq({commit}) {
+    async getFaq({ commit }) {
       try {
         const {data} = await axios.get(`${apiLink}faq`)
         commit('setFaq', data)
@@ -142,42 +142,37 @@ export default createStore({
         commit('setError', error.message)
       }
     },
-    async addUser({commit}, { firstName, email, password }) {
+    async addUser({ commit }, user) {
       try {
-        const response = await axios.post(`${apiLink}register`, {
-          firstName,
-          email,
-          password
-        })
-        
-        document.cookie = `token=${data.token};path=/;max-age=3600`;
+        const response = await axios.post(`${apiLink}register`, user)
+        const token = response.data.token
 
-        console.log('User added successfully:', response.data);
-        
-        commit('SET_USER', response.data);
+        VueCookies.set('token', token, 'id')
+        commit('setAuthentication', true);
       } catch (error) {
-        console.error('Sign up Error:', error);
-        commit('setError', error.message)
+        console.error('Signup error:', error.response || error);
+        commit('setAuthentication', false);
+        throw error;
       }
     },
-    async loginUser({commit}, info) {
+    async loginUser({ commit }, { email, password }) {
       try {
-        let {data} = await axios.post(`${apiLink}login`, info)
-        console.log(data);
+        let response = await axios.post(`${apiLink}login`, { email, password })
+        console.log(response);
 
-        commit('setUserId', { id: true, username: info.username });
-        await router.push('/');
-        location.reload();
+        const token = response.data.token
+
+        VueCookies.set('token', token, 'id')
+        commit('SET_USER', response.data.user);
+
       } catch (error) {
-        console.error('Login error:', error);
-        this.errors.push('Invalid email or password')
+        console.error('Login error:', error.response || error);
+        commit('setAuthentication', false);
+        throw error;
       }      
       
     },
-    async addToCart({commit, state}, {product, quantity}) {
-      if (!state.userId) {
-        return alert('Please login to add product to cart')
-      }
+    async addToCart({ commit }, item) {
       try {
         // retrieve user ID from cookie or store/VueX state
         const userId = getCookie('userId') || state.userId 
@@ -192,12 +187,39 @@ export default createStore({
           product: product.id,
           quantity
         })
-        commit('SetAddToCart', {product, quantity})
+        commit('setAddToCart', item)
       } catch (error) {
         console.error('Error adding item to cart:', error);
       }
     },
-    async getCartItems({commit, state}) {
+    async addToCartDatabase({ state }) {
+      const cartItems = state.cart
+
+      try {
+        const userId = getCookie('userId') ||  state.userId
+        const token = getCookie('token')
+        const axiosInstance = axios.create({
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+
+        await Promise.all(
+          cartItems.map(async (item) => {
+            await axiosInstance.post(`${apiLink}user/${userId}/cart`, {
+              product: item.product.id,
+              quantity: item.quantity
+            })
+          })
+        )
+
+        alert('Items successfully added to the cart!')
+      } catch (error) {
+        console.error('Error adding items to the cart database:', error);
+        
+      }
+    },
+    async getCartItems({ commit , state}) {
       try {
         // retrieve user ID from cookie or store/VueX state
         const userId = getCookie('userId') || state.userId 
@@ -216,7 +238,7 @@ export default createStore({
     async login({commit}, { email, password }) {
       try {
         // Make the login request to the backend
-        const response = await axios.post('/api/login', { email, password });
+        const response = await axios.post(`${apiLink}login`, { email, password });
         
         // If login is successful, get the token
         const token = response.data.token;

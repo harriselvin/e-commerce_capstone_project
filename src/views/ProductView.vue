@@ -37,10 +37,11 @@
                                         <p>Quantity</p>
                                         <input @input="updateQuantity($event)" type="number" name="quantity"
                                         :disabled="quantityDisable()"
-                                        min="1">
+                                        min="1"
+                                        value="1">
                                     </div>
                                     <div class="prod-btn">
-                                        <button @click="openModal">Add to Cart</button>
+                                        <button @click="openModal(product)">Add to Cart</button>
                                     </div>
                                     <div class="desc-boxes">
                                         <div v-for="(desc, index) in descriptions" :key="index" class="prod-desc">
@@ -63,7 +64,7 @@
                     </card-comp>
                 </div>
                 <div>
-                    <cart-modal-comp :show="isModalOpen" @close="closeModal"/>
+                    <cart-modal-comp :show="isModalOpen" :cartItems="cartItems" @close="closeModal" @checkout="checkout" />
                 </div>
                 <div class="prod-footer">
                     <footer-comp/>
@@ -100,7 +101,8 @@ export default {
     props: {
         product: {
             type: Object,
-            required: true
+            required: true,
+            product: Object
         }
     },
     components: {
@@ -115,6 +117,9 @@ export default {
         },
         totalPrice() {
             return (this.productData.price * this.quantity).toFixed(2)
+        },
+        cartItems() {
+            return this.$store.state.cart
         }
     },
     methods: {
@@ -146,12 +151,11 @@ export default {
         toggleDesc(index) {
             this.expandedIndex = this.expandedIndex === index ? null : index
         },
-        openModal() {
-            this.$store.dispatch('addToCart', {
-                product: this.productData,
-                quantity: this.quantity
-            })
+        openModal(product) {
             this.isModalOpen = true
+            this.$store.dispatch('addToCart', product)
+
+            this.$store.commit('ADD_TO_CART', { product: product, quantity: 1 });
         },
         closeModal() {
             this.isModalOpen = false

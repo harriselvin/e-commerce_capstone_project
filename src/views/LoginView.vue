@@ -148,7 +148,11 @@ export default {
                     email: this.email,
                     password: this.password
                 })
+
+                this.$store.dispatch('checkAuth')
+
                 await this.$router.push('/admin')
+                location.reload()
             } catch (error) {
                 console.error('Signup error:', error.response || error);
                 if (error.response && error.response.data) {

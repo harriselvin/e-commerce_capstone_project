@@ -33,6 +33,13 @@
             <p>faq.answers</p>
         </slot>
     </div>
+    <div v-else-if="typeof cartItems == 'object'">
+        <slot name="cartItemSlot">
+            <p>cartItems.cartID</p>
+            <p>cartItems.prodID</p>
+            <p>cartItems.quantity</p>
+        </slot>
+    </div>
     <div v-else>
         <slot name="noStockSlot">
             <h2>Out of stock</h2>
@@ -42,7 +49,7 @@
 </template>
 <script>
 export default {
-  props: ['products', 'product', 'bestSellers', 'faq'],
+  props: ['products', 'product', 'bestSellers', 'faq', 'cartItems'],
   data() {
     return {
         loading: true
