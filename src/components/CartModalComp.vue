@@ -14,16 +14,28 @@
                                     <div class="cart-box">
                                         <img :src="item.product.prodUrl" :alt="item.product.prodName" class="cart-item-img">
                                         <div class="cart-item-details">
-                                            <h3>{{ item.product.prodName }}</h3>
-                                            <p>Price: R {{ item.product.price }}</p>
-                                            <p>Quantity: {{ item.quantity }}</p>
+                                            <div class="cart-prod-name">
+                                                <h3>{{ item.product.prodName }}</h3>
+                                            </div>
+                                            <div class="cart-prod-price">
+                                                <p>R <span class="price">{{ (item.product.price * item.quantity).toFixed(2) }}</span></p>
+                                            </div>
+                                            <div class="cart-prod-quan">
+                                                <p>Quantity</p>
+                                                <input @input="updateQuantity($event, item.product.id)" type="number" name="quantity"
+                                                :disabled="quantityDisable(item.quantity)"
+                                                min="1"
+                                                value="item.quantity">
+                                            </div>
                                             <p>Total: R {{ (item.product.price * item.quantity).toFixed(2) }}</p>
                                         </div>
                                     </div>
                                 </template>
                             </card-comp>
                         </div>
-                        <button @click="handleCheckout">Checkout</button>
+                        <div class="checkout-btn">
+                            <button @click="handleCheckout">Checkout</button>
+                        </div>
                     </div>
                     <div v-else>
                         <p>Your cart is empty.</p>
@@ -53,6 +65,9 @@ export default {
         isAuthenticated() {
             return this.$store.state.isAuthenticated
         },
+        totalCartPrice() {
+            return this.cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0).toFixed(2);
+        }
     },
     methods: {
         closeModal() {
@@ -64,6 +79,19 @@ export default {
             } else {
                 alert('Please log in or sign up to complete the checkout.')
                 this.$router.push({ name: 'login' })
+            }
+        },
+        quantityDisable(quantity) {
+            return quantity <= 0;
+        },
+        updateQuantity(event, productId) {
+            const value = parseInt(event.target.value);
+            if (isNaN(value) || value < 1) {
+                // this.quantity = 1;
+                this.$store.commit('updateQuantity', { productId, quantity: 1 })
+            } else {
+                // this.quantity = value
+                this.$store.commit('updateQuantity', { productId, quantity: value })
             }
         },
         checkout() {
@@ -90,7 +118,7 @@ export default {
         transform: translateX(100%);
         background-color: #fff;
         border: 1px solid #ddd;
-        width: 300px;
+        width: 400px;
         height: 100%;
         transition: transform .5s ease-in-out;
     }
@@ -111,5 +139,24 @@ export default {
     }
     .modal.show {
         transform: translateX(0);
+    }
+    .cart-box {
+        display: flex;
+        padding: .5em;
+    }
+    .cart-box img {
+        height: 8em;
+    }
+    .cart-prod-quan {
+        display: flex;
+        align-items: center;
+    }
+    .cart-prod-quan p {
+        padding: 0 .5em;
+    }
+    .cart-prod-quan input {
+        width: 4em;
+        height: 2em;
+        padding: 0 .3em;
     }
 </style>

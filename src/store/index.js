@@ -71,9 +71,10 @@ export default createStore({
       state.error = payload
     },
     setAddToCart(state, item) {
-      const cartItem = state.cart.find(item => item.product.id === product.id);
-      if (cartItem) {
-        cartItem.quantity += quantity
+      const index = state.cart.findIndex(cartItem => cartItem.product.id === item.product.id);
+      if (index !== -1) {
+        // cartItem.quantity += quantity
+        state.cart[index].quantity += item.quantity
       } else {
         state.cart.push(item)
       }
@@ -86,6 +87,15 @@ export default createStore({
     },
     setAuthentication(state, status) {
       state.isAuthenticated = status
+    },
+    UPDATE_CART_ITEMS(state, { product, quantity }) {
+      state.cart.push({ id: product.id, product, quantity })
+    },
+    updateQuantity(state, { productId, quantity }) {
+      const index = state.cart.findIndex(item => item.product.id === productId)
+      if (index !== -1) {
+        state.cart[index].quantity = quantity
+      }
     }
   },
   actions: {

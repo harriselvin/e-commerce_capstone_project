@@ -31,7 +31,7 @@
                                         <h3>{{ productData.prodName }}</h3>
                                     </div>
                                     <div class="prod-price">
-                                        <p>R <span class="price">{{ totalPrice }}</span></p>
+                                        <p>R <span class="price">{{ productData.price }}</span></p>
                                     </div>
                                     <div class="prod-quan">
                                         <p>Quantity</p>
@@ -41,7 +41,7 @@
                                         value="1">
                                     </div>
                                     <div class="prod-btn">
-                                        <button @click="openModal(product)">Add to Cart</button>
+                                        <button @click="openModal(productData)">Add to Cart</button>
                                     </div>
                                     <div class="desc-boxes">
                                         <div v-for="(desc, index) in descriptions" :key="index" class="prod-desc">
@@ -115,9 +115,6 @@ export default {
         productData() {
           return this.$store.state.product
         },
-        totalPrice() {
-            return (this.productData.price * this.quantity).toFixed(2)
-        },
         cartItems() {
             return this.$store.state.cart
         }
@@ -152,10 +149,15 @@ export default {
             this.expandedIndex = this.expandedIndex === index ? null : index
         },
         openModal(product) {
-            this.isModalOpen = true
-            this.$store.dispatch('addToCart', product)
+            if (!product) {
+                console.error('Product object is undefined');
+                return
+            }
 
-            this.$store.commit('ADD_TO_CART', { product: product, quantity: 1 });
+            this.isModalOpen = true
+            this.$store.dispatch('addToCart', { id: product.prodId, product, quantity: 1 })
+
+            this.$store.commit('UPDATE_CART_ITEMS', { id: product.prodId, product, quantity: 1 });
         },
         closeModal() {
             this.isModalOpen = false
