@@ -20,6 +20,11 @@ axios.defaults.headers.Authorization = `Bearer ${getCookie('token')}`
 
 export default createStore({
   state: {
+    users: [],
+    user: null,
+    addUser: null,
+    editUser: null,
+    removeUser: null,
     products: [],
     product: null,
     bestSellers: [],
@@ -34,6 +39,21 @@ export default createStore({
   getters: {
   },
   mutations: {
+    setUsers(state, payload) {
+      state.users = payload
+    },
+    setUser(state, payload) {
+      state.user = payload
+    },
+    setAddUser(state, payload) {
+      state.addUser = payload
+    },
+    setEditUser(state, payload) {
+      state.editUser = payload
+    },
+    setRemoveUser(state, payload) {
+      state.removeUser = payload
+    },
     setProducts(state, payload) {
       state.products = payload
     },
@@ -99,6 +119,49 @@ export default createStore({
     }
   },
   actions: {
+    async getUsers({ commit }) {
+      try {
+        const {data} = await axios.get(`${apiLink}users`)
+        commit('setUsers', data)
+      } catch (error) {
+        console.error('Error fetching users', error)
+      }
+    },
+    async getUser({ commit }, id) {
+      try {
+        const {data} = await axios.get(`${apiLink}user/${id}`)
+        commit('setUser', data)
+      } catch (error) {
+        console.error('Error fetching user', error)
+        commit('setError', error.message)
+      }
+    },
+    async addAdminUser({ commit }, user) {
+      try {
+        const response = await axios.post(`${apiLink}register`, user)
+        commit('setAddUser', response.data)
+      } catch (error) {
+        console.error('Error adding user:', error.response || error);
+      }
+    },
+    async editUser({ commit }, id) {
+      try {
+        const {data} = await axios.put(`${apiLink}user/${id}`)
+        commit('setEditUser', data)
+      } catch (error) {
+        console.error('Error editing user', error)
+        commit('setError', error.message)
+      }
+    },
+    async removeUser({ commit }, id) {
+      try {
+        const {data} = await axios.put(`${apiLink}user/${id}`)
+        commit('setRemoveUser', data)
+      } catch (error) {
+        console.error('Error removing user', error)
+        commit('setError', error.message)
+      }
+    },
     async getProducts({ commit }) {
       try {
         const {data} = await axios.get(`${apiLink}items`)
@@ -253,10 +316,9 @@ export default createStore({
         // If login is successful, get the token
         const token = response.data.token;
 
-        // Set the token in cookies
-        VueCookies.set('token', token, '1d'); // Store token for 1 day
-        commit('setAuthentication', true); // Update the authentication status
-
+        VueCookies.set('token', token, '1d'); 
+        commit('setAuthentication', true); 
+        
       } catch (error) {
         console.error('Login error:', error.response || error);
         commit('setAuthentication', false);

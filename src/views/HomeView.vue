@@ -2,6 +2,7 @@
   <div class="home" id="home">
     <div v-if="loading">
       <page-spinner-comp/>
+      <p>Please be patient. The app takes a while to render all items.</p>
     </div>
     <div v-else>
       <div class="home-head">

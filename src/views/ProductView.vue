@@ -176,7 +176,7 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
     .prod-container {
         min-height: 100vh;
         display: flex;

@@ -138,7 +138,7 @@ export default {
 </script>
 <style>
 .truck-loader {
-    min-height: 100vh;
+    min-height: 78vh;
     display: flex;
     justify-content: center;
     align-items: center;

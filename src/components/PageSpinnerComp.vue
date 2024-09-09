@@ -21,7 +21,7 @@ export default {
 </script>
 <style>
 .page-spinner {
-    min-height: 100vh;
+    min-height: 90vh;
     display: flex;
     justify-content: center;
     align-items: center;

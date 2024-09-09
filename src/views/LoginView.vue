@@ -196,9 +196,10 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
     .login-container {
         margin: 8em 0 0;
+        min-width: 40em;
     }
     .login-logo img {
         width: 8em;

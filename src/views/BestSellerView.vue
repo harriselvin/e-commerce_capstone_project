@@ -38,7 +38,7 @@
                                         value="1">
                                     </div>
                                     <div class="prod-btn">
-                                        <button>Add to Cart</button>
+                                        <button @click="openModal(sellerData)">Add to Cart</button>
                                     </div>
                                     <div class="desc-boxes">
                                         <div v-for="(desc, index) in descriptions" :key="index" class="prod-desc">
@@ -60,6 +60,9 @@
                         </template>
                     </card-comp>
                 </div>
+                <div>
+                    <cart-modal-comp :show="isModalOpen" :cartItems="cartItems" @close="closeModal" @checkout="checkout" />
+                </div>
                 <div class="prod-footer">
                     <footer-comp/>
                 </div>
@@ -75,6 +78,7 @@ import CardComp from '@/components/CardComp.vue';
 import { toRaw } from 'vue';
 import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
 import FooterComp from '@/components/FooterComp.vue';
+import CartModalComp from '@/components/CartModalComp.vue';
 
 export default {
     data() {
@@ -82,6 +86,7 @@ export default {
             productId: null,
             loading: true,
             quantity: 1,
+            isModalOpen: false,
             expandedIndex: 0,
             descriptions: [
                 { title: "PRODUCT INFO", content: "" },
@@ -93,17 +98,22 @@ export default {
     props: {
         bestSeller: {
             type: Object,
-            required: true
+            required: true,
+            product: Object
         }
     },
     components: {
         CardComp,
         PageSpinnerComp,
+        CartModalComp,
         FooterComp
     },
     computed: {
         sellerData() {
           return this.$store.state.bestSeller
+        },
+        cartItems() {
+            return this.$store.state.cart
         }
     },
     methods: {
@@ -135,6 +145,20 @@ export default {
         toggleDesc(index) {
             this.expandedIndex = this.expandedIndex === index ? null : index
         },
+        openModal(product) {
+            if (!product) {
+                console.error('Product object is undefined');
+                return
+            }
+
+            this.isModalOpen = true
+            this.$store.dispatch('addToCart', { id: product.bestSellerId, product, quantity: 1 })
+
+            this.$store.commit('UPDATE_CART_ITEMS', { id: product.bestSellerId, product, quantity: 1 });
+        },
+        closeModal() {
+            this.isModalOpen = false
+        }
     },
     mounted() {
         this.productId = this.$route.params.id
@@ -149,7 +173,7 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
     .prod-container {
         min-height: 100vh;
         display: flex;

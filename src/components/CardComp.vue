@@ -33,11 +33,25 @@
             <p>faq.answers</p>
         </slot>
     </div>
-    <div v-else-if="typeof cartItems == 'object'">
-        <slot name="cartItemSlot">
-            <p>cartItems.cartID</p>
-            <p>cartItems.prodID</p>
-            <p>cartItems.quantity</p>
+    <div v-else-if="typeof addCartItems == 'object'">
+        <slot name="addCartItemSlot">
+            <p>addCartItems.cartID</p>
+            <p>addCartItems.prodID</p>
+            <p>addCartItems.quantity</p>
+        </slot>
+    </div>
+    <div v-else-if="typeof getCartItems == 'object'">
+        <slot name="getCartItemSlot">
+            <p>getCartItems.cartID</p>
+            <p>getCartItems.prodID</p>
+            <p>getCartItems.quantity</p>
+        </slot>
+    </div>
+    <div v-else-if="typeof users == 'object'">
+        <slot name="userSlot">
+            <p>users.firstName</p>
+            <p>users.lastName</p>
+            <p>users.age</p>
         </slot>
     </div>
     <div v-else>
@@ -49,7 +63,7 @@
 </template>
 <script>
 export default {
-  props: ['products', 'product', 'bestSellers', 'faq', 'cartItems'],
+  props: ['products', 'product', 'bestSellers', 'faq', 'addCartItems', 'getCartItems', 'users'],
   data() {
     return {
         loading: true

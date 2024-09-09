@@ -126,7 +126,7 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
   .shop-container {
     display: flex;
     flex-direction: column;

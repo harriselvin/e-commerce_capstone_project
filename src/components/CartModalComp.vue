@@ -9,8 +9,8 @@
                     </div>
                     <div v-if="cartItems.length > 0">
                         <div v-for="item in cartItems" :key="item.product.id" class="cart-item">
-                            <card-comp :cartItems="item">
-                                <template #cartItemSlot>
+                            <card-comp :addCartItems="item">
+                                <template #addCartItemSlot>
                                     <div class="cart-box">
                                         <img :src="item.product.prodUrl" :alt="item.product.prodName" class="cart-item-img">
                                         <div class="cart-item-details">
@@ -27,7 +27,9 @@
                                                 min="1"
                                                 value="item.quantity">
                                             </div>
-                                            <p>Total: R {{ (item.product.price * item.quantity).toFixed(2) }}</p>
+                                            <div class="cart-total-price">
+                                                <p>Total: R {{ (item.product.price * item.quantity).toFixed(2) }}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </template>
@@ -97,10 +99,17 @@ export default {
         checkout() {
             this.$emit('cart')
         }
+    },
+    watch: {
+        '$store.state.isAuthenticated'(newVal) {
+            if (newVal) {
+                this.$store.dispatch('addToCartDatabase', this.cartItems)
+            }
+        }
     }
 }
 </script>
-<style>
+<style scoped>
     .modal-container {
         position: fixed;
         top: 0;
