@@ -2,6 +2,7 @@ import { compare } from "bcrypt";
 import jwt from 'jsonwebtoken';
 import { config } from "dotenv";
 import { loginUserDB } from "../model/usersDB.js";
+import { loginAdminUserDB } from "../model/adminUsersDB.js";
 
 config()
 
@@ -16,7 +17,27 @@ const checkUser = async (req, res, next) => {
 
             res.cookie('token', token, { httpOnly: true })
 
-            // res.header('Authorization', `Bearer ${token}`);
+            req.body.token = token
+            next()
+            return
+        } else {
+            res.status(400).json({ message: "Invalid email or password" })
+        }
+    } catch (error) {
+
+    }
+}
+
+const checkAdminUser = async (req, res, next) => {
+    const { email, password } = req.body
+    let hashedPassword = (await loginAdminUserDB(email)).password
+
+    let result = await compare(password, hashedPassword)
+    try {
+        if (result == true) {
+            let token = jwt.sign({ email: email }, process.env.SECRET_KEY, { expiresIn: '1h' })
+
+            res.cookie('token', token, { httpOnly: true })
 
             req.body.token = token
             next()
@@ -49,4 +70,4 @@ const verifyToken = (req, res, next) => {
     })
 }
 
-export { checkUser, verifyToken }
+export { checkUser, checkAdminUser, verifyToken }

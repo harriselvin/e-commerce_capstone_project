@@ -9,6 +9,6 @@ userRouter.get('/users', fetchUsers)
         .post('/register', addUser)
         .post('/login', checkUser, loginUser)
         .patch('/user/:id', updateUser)
-        .delete('user/:id', deleteUser)
+        .delete('/user/:id', deleteUser)
 
 export default userRouter
