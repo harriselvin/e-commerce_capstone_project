@@ -167,6 +167,7 @@ export default {
     text-align: left;
     color: orangered;
     overflow: hidden;
+    margin: -1em 0 0;
   }
   .shop-now-text h1 {
     text-transform: uppercase;

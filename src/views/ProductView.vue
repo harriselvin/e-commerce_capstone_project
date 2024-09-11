@@ -186,6 +186,7 @@ export default {
     }
     .routes {
         display: flex;
+        margin: 10em 10cqi 5em;
     }
     .routes .router {
         color: orangered;

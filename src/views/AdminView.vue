@@ -10,7 +10,7 @@
 				</div>
 				<div class="user-actions action-btn">
 					<div class="add-user">
-						<button class="add" @click="showModal = true">Add</button>
+						<button class="add" @click="showAddModal = true">Add</button>
 					</div>
 					<div>
 						<select name="user-sort sort" id="user-sort">
@@ -19,7 +19,10 @@
 						</select>
 					</div>
 					<div>
-						<add-user-comp v-if="showModal" @close="showModal = false" @add-user="handleAddUser"/>
+						<add-user-comp v-if="showAddModal" @close="showAddModal = false" @add-user="handleAddUser" />
+					</div>
+					<div>
+						<edit-user-comp v-if="showEditModal" @close="showEditModal = false" @add-user="handleEditUser" />
 					</div>
 				</div>
 				<table border="1px" class="table-head user-table">
@@ -32,18 +35,18 @@
 						<th class="country">Country</th>
 						<th class="role">Role</th>
 						<th class="email">Email</th>
-						<th class="edit">Edit</th>
-						<th class="delete">Remove</th>
+						<th class="edit">Action</th>
+						<th class="delete">Action</th>
 					</thead>
 				</table>
-				<div class="admin-user-box" v-for="user in adminUsers" :key="user">
+				<div class="admin-user-box" v-for="user in users" :key="user.id">
 						<card-comp :users="user">
 							<template #userSlot>
 								<div class="table-container">
 									<table border="1" class="user-table">
 										<tbody>
 											<tr>
-												<td class="user-avatar"><img :src="user.userProfile" :alt="user.firstName"></td>
+												<td class="user-avatar"><img :src="user.profileUrl" alt="User Avatar"></td>
 												<td class="name">{{ user.firstName }}</td>
 												<td class="surname">{{ user.lastName }}</td>
 												<td class="age">{{ user.age }}</td>
@@ -52,12 +55,13 @@
 												<td class="role">{{ user.userRole }}</td>
 												<td class="email">{{ user.email }}</td>
 												<td class="edit">
-													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+													<svg @click="showEditModal = true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
 														<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
 													</svg>
+													
 												</td>
 												<td class="delete">
-													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-x" viewBox="0 0 16 16">
+													<svg @click="deleteUser(user.id)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-x" viewBox="0 0 16 16">
 														<path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
 														<path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m-.646-4.854.646.647.646-.647a.5.5 0 0 1 .708.708l-.647.646.647.646a.5.5 0 0 1-.708.708l-.646-.647-.646.647a.5.5 0 0 1-.708-.708l.647-.646-.647-.646a.5.5 0 0 1 .708-.708"/>
 													</svg>
@@ -93,8 +97,8 @@
 						<th class="quantity">Quantity</th>
 						<th class="category">Category</th>
 						<th class="description">Description</th>
-						<th class="edit">Edit</th>
-						<th class="delete">Remove</th>
+						<th class="edit">Action</th>
+						<th class="delete">Action</th>
 					</thead>
 				</table>
 				<div class="admin-products">
@@ -117,7 +121,7 @@
 													</svg>
 												</td>
 												<td class="delete">
-													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+													<svg @click="deleteProduct(product.id)" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
 														<path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
 														<path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
 													</svg>
@@ -141,24 +145,28 @@
 import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
 import CardComp from '@/components/CardComp.vue';
 import AddUserComp from '@/components/AddUserComp.vue';
+import EditUserComp from '@/components/EditUserComp.vue';
+import { mapActions } from 'vuex';
 
 export default {
 	data() {
 		return {
 			loading: true,
-			showModal: false
+			showAddModal: false,
+			showEditModal: false,
 		}
 	},
 	components: {
 		PageSpinnerComp,
 		CardComp,
-		AddUserComp
+		AddUserComp,
+		EditUserComp
 	},
 	computed: {
 		adminProducts() {
 			return this.$store.state.products
 		},
-		adminUsers() {
+		users() {
 			return this.$store.state.users
 		},
 		filteredProducts() {
@@ -189,25 +197,66 @@ export default {
         console.error("Failed to fetch users data:", error);
       }
     },
-		async handleAddUser() {
-			if (!this.name || !this.surname || !this.age || !this.gender || !this.country || !this.role || !this.email || !this.password) {
+		async handleAddUser(userData) {
+			if (!userData.name || !userData.surname || !userData.age || !userData.email || !userData.password) {
 				alert('All fields are required')
-			}
-			
-			const userData = {
-				name: this.name,
-				email: this.email,
-				password: this.password,
-				address: this.address
+				return
 			}
 
 			try {
-				const response = await this.$store.dispatch('addUser', userData)
-				console.log('User added successfully:', response.data);
+				const response = await this.$store.dispatch('addAdminUser', userData)
+				console.log('Admin user added successfully:', response.data);
 			} catch (error) {
 				console.error('Failed to add user:', error);
 			}
-		}
+		},
+		async handleEditUser() {
+			if (!this.name || !this.surname || !this.age || !this.gender || !this.role || !this.email || !this.password || !this.profile) {
+				alert('All fields are required')
+			}
+			
+			const formData = {
+				name: this.name,
+				surname: this.surname,
+				age: this.age, 
+				gender: this.gender,
+				role: this.role,
+				email: this.email,
+				password: this.password,
+				// address: this.address,
+				profile: this.profile
+			}
+
+			try {
+				const response = await this.$store.dispatch('editAdminUser', formData)
+				console.log('Admin user added successfully:', response.data);
+			} catch (error) {
+				console.error('Failed to add admin user:', error);
+			}
+		},
+		deleteUser(userId) {
+			if (confirm('Are you sure you want to delete this user?')) {
+				this.$store.dispatch('deleteUser', userId)
+					.then(() => {
+						alert('User deleted successfully')
+					})
+				.catch((error) => {
+					alert('Error deleting user:' + error.message)
+				})
+			}
+		},
+		deleteProduct(productId) {
+			if (confirm('Are you sure you want to delete this product?')) {
+				this.$store.dispatch('deleteProduct', productId)
+					.then(() => {
+						alert('Product deleted successfully')
+					})
+				.catch((error) => {
+					alert('Error deleting product:' + error.message)
+				})
+			}
+		},
+		...mapActions(['deleteUser'])
 	},
 	async mounted() {
     try {

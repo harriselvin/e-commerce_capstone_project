@@ -7,7 +7,7 @@
                         <h2 class="back-to-shop" @click="$emit('close')">></h2>
                         <h2>Cart</h2>
                     </div>
-                    <div v-if="cartItems.length > 0">
+                    <div class="cart-content" v-if="cartItems.length > 0">
                         <div v-for="item in cartItems" :key="item.product.id" class="cart-item">
                             <card-comp :addCartItems="item">
                                 <template #addCartItemSlot>
@@ -25,18 +25,27 @@
                                                 <input @input="updateQuantity($event, item.product.id)" type="number" name="quantity"
                                                 :disabled="quantityDisable(item.quantity)"
                                                 min="1"
-                                                value="item.quantity">
+                                                :value="item.quantity">
                                             </div>
-                                            <div class="cart-total-price">
-                                                <p>Total: R {{ (item.product.price * item.quantity).toFixed(2) }}</p>
-                                            </div>
+                                        </div>
+                                        <div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                                            </svg>
                                         </div>
                                     </div>
                                 </template>
                             </card-comp>
                         </div>
                         <div class="checkout-btn">
-                            <button @click="handleCheckout">Checkout</button>
+                            <div class="cart-total-price">
+                                <p>Total: R {{ totalCartPrice }}</p>
+                            </div>
+                            <div class="cart-actions">
+                                <button @click="handleCheckout">Checkout</button>
+                                <button>Clear</button>
+                            </div>
                         </div>
                     </div>
                     <div v-else>
@@ -129,7 +138,9 @@ export default {
         border: 1px solid #ddd;
         width: 400px;
         height: 100%;
+        max-height: 80vh;
         transition: transform .5s ease-in-out;
+        overflow-y: auto;
     }
     .modal-heading {
         display: flex;
@@ -139,6 +150,8 @@ export default {
         color: #fff;
         margin: 0;
         padding: 0 1em;
+        position: sticky;
+        top: 0;
     }
     .back-to-shop {
         cursor: pointer;
@@ -149,8 +162,13 @@ export default {
     .modal.show {
         transform: translateX(0);
     }
+    .cart-content {
+        min-height: 65vh;
+    }
     .cart-box {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
         padding: .5em;
     }
     .cart-box img {
@@ -167,5 +185,27 @@ export default {
         width: 4em;
         height: 2em;
         padding: 0 .3em;
+    }
+    .cart-actions {
+        display: flex;
+        gap: .5em;
+    }
+    .checkout-btn {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #000;
+        margin: 0;
+        padding: 1em 0;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+    }
+    .bi-trash {
+        cursor: pointer;
+        transition: .3s;
+    }
+    .bi-trash:hover {
+        color: orangered;
     }
 </style>
