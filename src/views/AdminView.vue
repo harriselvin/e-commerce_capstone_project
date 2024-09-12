@@ -32,7 +32,6 @@
 						<th class="surname">Surname</th>
 						<th class="age">Age</th>
 						<th class="gender">Gender</th>
-						<th class="country">Country</th>
 						<th class="role">Role</th>
 						<th class="email">Email</th>
 						<th class="edit">Action</th>
@@ -51,7 +50,6 @@
 												<td class="surname">{{ user.lastName }}</td>
 												<td class="age">{{ user.age }}</td>
 												<td class="gender">{{ user.gender }}</td>
-												<td class="country">{{ user.country }}</td>
 												<td class="role">{{ user.userRole }}</td>
 												<td class="email">{{ user.email }}</td>
 												<td class="edit">
@@ -291,6 +289,10 @@ export default {
 		padding: 1em 2em;
 		cursor: pointer;
 	}
+	.user-avatar {
+		width: 3em;
+		min-width: 3em;
+	}
 	.user-avatar img {
 		width: 3em;
 		min-width: 3em;
@@ -303,7 +305,7 @@ export default {
 		width: clamp(1em, 100vw, 7em);
 	}
 	.user-table .age {
-		width: clamp(1em, 100vw, 2em);
+		width: clamp(1em, 100vw, 3em);
 	}
 	.user-table .gender {
 		width: clamp(1em, 100vw, 4em);
@@ -312,10 +314,10 @@ export default {
 		width: clamp(1em, 100vw, 4em);
 	}
 	.user-table .role {
-		width: clamp(1em, 100vw, 3em);
+		width: clamp(1em, 100vw, 4em);
 	}
 	.user-table .email {
-		width: clamp(1em, 100vw, 15em);
+		width: clamp(5em, 100vw, 15em);
 	}
 	.user-table .edit {
 		width: clamp(1em, 100vw, 5em);
@@ -355,7 +357,7 @@ export default {
 		width: clamp(1em, 100vw, 5em);
 	}
 	.product-table .description {
-		width: clamp(10em, 100vw, 20em);
+		width: clamp(15em, 100vw, 18em);
 	}
 	.product-table .edit {
 		width: clamp(1em, 100vw, 5em);

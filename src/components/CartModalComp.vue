@@ -115,6 +115,9 @@ export default {
                 this.$store.dispatch('addToCartDatabase', this.cartItems)
             }
         }
+    },
+    mounted() {
+        this.$store.dispatch('getCartItems')
     }
 }
 </script>
@@ -163,7 +166,10 @@ export default {
         transform: translateX(0);
     }
     .cart-content {
-        min-height: 65vh;
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
     .cart-box {
         display: flex;
@@ -197,9 +203,20 @@ export default {
         background-color: #000;
         margin: 0;
         padding: 1em 0;
-        position: fixed;
+        position: sticky;
         width: 100%;
         bottom: 0;
+    }
+    .checkout-btn button {
+        padding: .5em 1em;
+        color: orangered;
+        transition: .3s;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+    .checkout-btn button:hover {
+        color: white;
+        background-color: orangered;
     }
     .bi-trash {
         cursor: pointer;

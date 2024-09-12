@@ -41,7 +41,7 @@
                         <p class="total-price">Total: R {{ totalCartPrice }}</p>
                     </div>
                     <div class="cart-actions">
-                        <button @click="handleCheckout">Checkout</button>
+                        <button @click="addItemToCart(item.product)">Checkout</button>
                         <button>Clear</button>
                     </div>
                 </div>
@@ -56,6 +56,11 @@
 import CardComp from '@/components/CardComp.vue';
 
 export default {
+    data() {
+        return {
+            loading: true
+        }
+    },
     components: {
         CardComp
     },
@@ -74,6 +79,9 @@ export default {
         },
         totalCartPrice() {
             return this.cartItems.reduce((acc, item) => acc + item.product.price * item.quantity, 0).toFixed(2);
+        },
+        cartData() {
+            return this.$store.state.cartItems
         }
     },
     methods: {
@@ -91,15 +99,16 @@ export default {
         updateQuantity(event, productId) {
             const value = parseInt(event.target.value);
             if (isNaN(value) || value < 1) {
-                // this.quantity = 1;
                 this.$store.commit('updateQuantity', { productId, quantity: 1 })
             } else {
-                // this.quantity = value
                 this.$store.commit('updateQuantity', { productId, quantity: value })
             }
         },
         checkout() {
             this.$emit('cart')
+        },
+        addItemToCart(product) {
+            this.$store.dispatch('addToCart', product)
         }
     },
     watch: {
@@ -108,6 +117,11 @@ export default {
                 this.$store.dispatch('addToCartDatabase', this.cartItems)
             }
         }
+    },
+    mounted() {
+        this.$store.dispatch('getCartItems').then(() => {
+            this.loading = false
+        })
     }
 }
 </script>

@@ -112,17 +112,21 @@ export default createStore({
     setError(state, payload) {
       state.error = payload
     },
-    setAddToCart(state, item) {
-      const index = state.cart.findIndex(cartItem => cartItem.product.id === item.product.id);
+    setAddToCart(state, product) {
+      const index = state.cart.findIndex(item => item.product.id === product.id);
       if (index !== -1) {
         // cartItem.quantity += quantity
-        state.cart[index].quantity += item.quantity
+        state.cart[index].quantity += product.quantity
       } else {
-        state.cart.push(item)
+        state.cart.push({ product, quantity: product.quantity })
       }
     },
     setCartItems(state, payload) {
-      state.cartItems = payload
+      state.cartItems = payload.map(item => ({
+        id: item.id,
+        product: item.product,
+        quantity: item.quantity
+      }))
     },
     setUserId(state, userId) {
       state.userId = userId
@@ -130,8 +134,8 @@ export default createStore({
     setAuthentication(state, status) {
       state.isAuthenticated = status
     },
-    UPDATE_CART_ITEMS(state, { product, quantity }) {
-      state.cart.push({ id: product.id, product, quantity })
+    UPDATE_CART_ITEMS(state, cartItems) {
+      state.cart = cartItems
     },
     updateQuantity(state, { productId, quantity }) {
       const index = state.cart.findIndex(item => item.product.id === productId)
@@ -299,50 +303,75 @@ export default createStore({
       }      
       
     },
-    async addToCart({ commit }, item) {
+    async addToCart({ commit, state }, product) {
       try {
+        const cartItems = state.cart
+        const existingProductIndex = cartItems.findIndex(item => item.product.id === product.id)
+
+        if (existingProductIndex !== -1) {
+          cartItems[existingProductIndex].quantity += product.quantity
+        } else {
+          cartItems.push({ product, quantity: product.quantity })
+        }
+
         // retrieve user ID from cookie or store/VueX state
-        const userId = getCookie('userId') || state.userId 
-        const token = getCookie('token')
+        // const userId = state.userId || getCookie('userId') 
+        // const token = getCookie('token')
 
-        const axiosInstance = axios.create({
-          baseURL: apiLink,
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
+        // const axiosInstance = axios.create({
+        //   baseURL: apiLink,
+        //   headers: {
+        //     Authorization: `Bearer ${token}`,
+        //     'Content-Type': 'application/json'
+        //   }
+        // })
 
-        const {data} = await axiosInstance.post(`user/${userId}/cart`, {
-          product: item.product.id,
-          quantity: item.quantity
-        })
-        commit('setAddToCart', item)
+        // const {data} = await axiosInstance.post(`user/${userId}/cart`, cartItems)
+
+        commit('setAddToCart', cartItems)
+
+        localStorage.setItem('cartItems', JSON.stringify(cartItems))
       } catch (error) {
         console.error('Error adding item to cart:', error);
       }
     },
-    async addToCartDatabase({ state }) {
-      const cartItems = state.cart
+    async addToCartDatabase({ commit }, state) {
+      // const cartItems = state.cart
 
       try {
-        const userId = getCookie('userId') ||  state.userId
+        const userId = state.userId || getCookie('userId')
         const token = getCookie('token')
         const axiosInstance = axios.create({
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
           }
         })
 
-        await Promise.all(
-          cartItems.map(async (item) => {
-            await axiosInstance.post(`${apiLink}user/${userId}/cart`, {
-              product: item.product.id,
-              quantity: item.quantity
-            })
+        const promises = state.cart.map(item => {
+          axiosInstance.post(`${apiLink}user/${userId}/cart`, {
+            product: item.product.id,
+            quantity: item.quantity
           })
-        )
+        }) 
 
-        alert('Items successfully added to the cart!')
+        await Promise.all(promises)
+
+        // await Promise.all(
+        //   cartItems.map(async (item) => {
+        //     await axiosInstance.post(`${apiLink}user/${userId}/cart`, {
+        //       product: item.product.id,
+        //       quantity: item.quantity
+        //     })
+        //   })
+        // )
+
+        // const response = await axios.post(`${apiLink}user/${userId}/cart`, cartItems)
+        // const cartItem = { product: cartItems[0].product, quantity: cartItems[0].quantity }
+        commit('UPDATE_CART_ITEMS', state.cart)
+        // commit('setCartItems', cartItems)
+        localStorage.setItem('cartItems', JSON.stringify(state.cart))
+        alert('Item successfully added to the cart!')
       } catch (error) {
         console.error('Error adding items to the cart database:', error);
         
@@ -367,17 +396,30 @@ export default createStore({
       }
     },
     async getCartItems({ commit , state}) {
+      const savedCartItems = JSON.parse(localStorage.getItem('cartItems')) || []
+      if (savedCartItems.length > 0) {
+        commit('UPDATE_CART_ITEMS', savedCartItems)
+      }
+
       try {
         // retrieve user ID from cookie or store/VueX state
-        const userId = getCookie('userId') || state.userId 
+        const userId = state.userId || getCookie('userId')
+        console.log('userId:', userId);
+        
         const token = getCookie('token')
+        console.log('token:', token);
+        
         const axiosInstance = axios.create({
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
             }
         })
+        
         const {data} = await axiosInstance.get(`${apiLink}user/${userId}/carts`)
         commit('setCartItems', data)
+        console.log('Cart items retrieved:', data);
+        
       } catch (error) {
         console.error( 'Error fetching cart items:', error);
       }
@@ -389,9 +431,11 @@ export default createStore({
         
         // If login is successful, get the token
         const token = response.data.token;
+        const userId = response.data.userId
 
         VueCookies.set('token', token, '1d'); 
         commit('setAuthentication', true); 
+        commit('setUserId', userId)
         
       } catch (error) {
         console.error('Login error:', error.response || error);
@@ -404,7 +448,7 @@ export default createStore({
       commit('setAuthentication', false)
     },
     checkAuth({commit}) {
-      const token = VueCookies.get('token')
+      const token = VueCookies.get('token') 
       commit('setAuthentication', !!token)
     }
   },
