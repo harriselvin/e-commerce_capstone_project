@@ -27,7 +27,7 @@ const fetchProduct = async (req, res) => {
 const addProduct = async (req, res) => {
   try {
     const { prodName, price, quantity, category, prodUrl, prodDesc, prodInfo } = req.body;
-    if (!prodName || !price || !quantity || !category || !prodUrl || !prodDesc || !prodInfo) {
+    if (!prodName || !price || !quantity || !category || !prodDesc || !prodInfo) {
       res.status(400).send('All product fields are required');
     } else {
       await addProductDB(prodName, price, quantity, category, prodUrl, prodDesc, prodInfo);
