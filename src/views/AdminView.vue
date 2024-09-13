@@ -10,19 +10,19 @@
 				</div>
 				<div class="user-actions action-btn">
 					<div class="add-user">
-						<button class="add" @click="showAddModal = true">Add</button>
+						<button class="add" @click="showAddUserModal = true">Add</button>
 					</div>
 					<div>
-						<select name="user-sort sort" id="user-sort">
-							<option value="1">Sorted A-Z</option>
-							<option value="2">Sorted Z-A</option>
+						<select name="user-sort sort" id="user-sort" v-model="userSortOption">
+							<option value="asc">Sort Name A-Z</option>
+							<option value="desc">Sort Name Z-A</option>
 						</select>
 					</div>
 					<div>
-						<add-user-comp v-if="showAddModal" @close="showAddModal = false" @add-user="handleAddUser" />
+						<add-user-comp v-if="showAddUserModal" @close="showAddUserModal = false" @add-user="handleAddUser" />
 					</div>
 					<div>
-						<edit-user-comp v-if="showEditModal" @close="showEditModal = false" @add-user="handleEditUser" />
+						<edit-user-comp v-if="showEditUserModal" @close="showEditUserModal = false" @add-user="handleEditUser" />
 					</div>
 				</div>
 				<table border="1px" class="table-head user-table">
@@ -38,14 +38,14 @@
 						<th class="delete">Action</th>
 					</thead>
 				</table>
-				<div class="admin-user-box" v-for="user in users" :key="user.id">
+				<div class="admin-user-box" v-for="user in sortedUsers" :key="user.id">
 						<card-comp :users="user">
 							<template #userSlot>
 								<div class="table-container">
 									<table border="1" class="user-table">
 										<tbody>
 											<tr>
-												<td class="user-avatar"><img :src="user.profileUrl" alt="User Avatar"></td>
+												<td class="user-avatar"><img :src="computedAvatarUrl" alt="User Avatar"></td>
 												<td class="name">{{ user.firstName }}</td>
 												<td class="surname">{{ user.lastName }}</td>
 												<td class="age">{{ user.age }}</td>
@@ -53,7 +53,7 @@
 												<td class="role">{{ user.userRole }}</td>
 												<td class="email">{{ user.email }}</td>
 												<td class="edit">
-													<svg @click="showEditModal = true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+													<svg @click="showEditUserModal = true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
 														<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
 													</svg>
 													
@@ -78,13 +78,19 @@
 				</div>
 				<div class="product-actions action-btn">
 					<div class="add-product">
-						<button class="add">Add</button>
+						<button class="add" @click="showAddProdModal = true">Add</button>
 					</div>
 					<div>
-						<select name="product-sort sort" id="product-sort">
-							<option value="1">Sorted A-Z</option>
-							<option value="2">Sorted Z-A</option>
+						<select name="product-sort sort" id="product-sort" v-model="productSortOption">
+							<option value="asc">Sort name A-Z</option>
+							<option value="desc">Sort name Z-A</option>
 						</select>
+					</div>
+					<div>
+						<add-product-comp v-if="showAddProdModal" @close="showAddProdModal = false" @add-product="handleAddProduct" />
+					</div>
+					<div>
+						<edit-product-comp v-if="showEditProductModal" @close="showEditProductModal = false" @add-user="handleEditProduct" />
 					</div>
 				</div>
 				<table border="1px" class="table-head product-table">
@@ -100,7 +106,7 @@
 					</thead>
 				</table>
 				<div class="admin-products">
-					<div class="admin-prod-box" v-for="item in adminProducts" :key="item">
+					<div class="admin-prod-box" v-for="item in sortedProducts" :key="item.id">
 						<card-comp :getCartItems="item">
 							<template #getCartItemSlot>
 								<div class="table-container">
@@ -114,7 +120,7 @@
 												<td class="category">{{ item.category }}</td>
 												<td class="description">{{ item.prodDesc }}</td>
 												<td class="edit">
-													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+													<svg @click="showEditProductModal = true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
 														<path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
 													</svg>
 												</td>
@@ -140,25 +146,36 @@
 	</div>
 </template>
 <script>
+/* eslint-disable */
 import PageSpinnerComp from '@/components/PageSpinnerComp.vue';
 import CardComp from '@/components/CardComp.vue';
 import AddUserComp from '@/components/AddUserComp.vue';
 import EditUserComp from '@/components/EditUserComp.vue';
+import EditProductComp from '@/components/EditProductComp.vue';
 import { mapActions } from 'vuex';
+import AddProductComp from '@/components/AddProductComp.vue';
 
 export default {
 	data() {
 		return {
 			loading: true,
-			showAddModal: false,
-			showEditModal: false,
+			showAddUserModal: false,
+			showAddProdModal: false,
+			showEditUserModal: false,
+			showEditProductModal: false,
+			userSortOption: 'asc',
+			productSortOption: 'asc',
+			defaultAvatarUrl: 'https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=',
+			avatarUrl: ''
 		}
 	},
 	components: {
 		PageSpinnerComp,
 		CardComp,
 		AddUserComp,
-		EditUserComp
+		EditUserComp,
+		EditProductComp,
+		AddProductComp
 	},
 	computed: {
 		adminProducts() {
@@ -175,8 +192,26 @@ export default {
 				return this.adminProducts
 			}
 		},
+		sortedUsers() {
+			return this.users.slice().sort((a, b) => {
+				return this.userSortOption === 'asc'
+					? a.firstName.localeCompare(b.firstName)
+					: b.firstName.localeCompare(a.firstName);
+			});
+		},
+		sortedProducts() {
+			return this.adminProducts.slice().sort((a, b) => {
+				return this.productSortOption === 'asc'
+					? a.prodName.localeCompare(b.prodName)
+					: b.prodName.localeCompare(a.prodName);
+			});
+		},
+		computedAvatarUrl() {
+			return this.avatarUrl || this.defaultAvatarUrl
+		}
 	},
 	methods: {
+		...mapActions(['getProducts', 'getUsers', 'addAdminUser', 'editAdminUser', 'deleteUser', 'deleteProduct', 'editProduct', 'addProduct']),
 		async getProducts() {
       try {
         await this.$store.dispatch('getProducts')
@@ -196,7 +231,7 @@ export default {
       }
     },
 		async handleAddUser(userData) {
-			if (!userData.name || !userData.surname || !userData.age || !userData.email || !userData.password) {
+			if (!userData.firstName || !userData.lastName || !userData.age || !userData.email || !userData.password) {
 				alert('All fields are required')
 				return
 			}
@@ -208,8 +243,21 @@ export default {
 				console.error('Failed to add user:', error);
 			}
 		},
+		async handleAddProduct(productData) {
+			if (!productData.prodName || !productData.price || !productData.quantity || !productData.category) {
+				alert('All fields are required')
+				return
+			}
+
+			try {
+				const response = await this.$store.dispatch('addProduct', productData)
+				console.log('Product added successfully:', response.data);
+			} catch (error) {
+				console.error('Failed to add user:', error);
+			}
+		},
 		async handleEditUser() {
-			if (!this.name || !this.surname || !this.age || !this.gender || !this.role || !this.email || !this.password || !this.profile) {
+			if (!this.firstName || !this.lastName || !this.age || !this.gender || !this.userRole || !this.email || !this.password) {
 				alert('All fields are required')
 			}
 			
@@ -221,7 +269,6 @@ export default {
 				role: this.role,
 				email: this.email,
 				password: this.password,
-				// address: this.address,
 				profile: this.profile
 			}
 
@@ -230,6 +277,27 @@ export default {
 				console.log('Admin user added successfully:', response.data);
 			} catch (error) {
 				console.error('Failed to add admin user:', error);
+			}
+		},
+		async handleEditProduct() {
+			if (!this.prodName || !this.price || !this.quantity || !this.category || !this.description) {
+				alert('All fields are required')
+			}
+			
+			const formData = {
+				prodName: this.prodName,
+				price: this.price,
+				quantity: this.quantity, 
+				category: this.category,
+				description: this.description,
+				profile: this.profile
+			}
+
+			try {
+				const response = await this.$store.dispatch('editProduct', formData)
+				console.log('Product added successfully:', response.data);
+			} catch (error) {
+				console.error('Failed to add product:', error);
 			}
 		},
 		deleteUser(userId) {
@@ -254,16 +322,19 @@ export default {
 				})
 			}
 		},
-		...mapActions(['deleteUser'])
+		updateAvatar(newUrl) {
+			this.avatarUrl = newUrl
+		}
 	},
 	async mounted() {
     try {
       await this.getProducts()
 			await this.getUsers()
+			this.loading = false
     } catch (error) {
       console.error("Failed to fetch data:", error);
     }
-  }
+  },
 }
 </script>
 <style scoped>

@@ -13,26 +13,26 @@
 				<div class="user-form">
 					<form @submit.prevent="handleSubmit" enctype="multipart/form-data">
 						<label for="profile">Profile Picture:
-							<input type="file" name="profile" id="profile" accept="image/jpg, image/png image/gif" @change="handleProfileChange">
+							<input type="file" name="profile" id="profile" accept="image/*" @change="handleProfileChange">
 						</label>
 						<label for="username">Firstname:
-							<input type="text" id="username" v-model="name">
+							<input type="text" id="username" v-model="firstName">
 						</label>
 						<label for="surname">Surname:
-							<input type="text" name="surname" id="surname" v-model="surname">
+							<input type="text" name="surname" id="surname" v-model="lastName">
 						</label>
 						<label for="age">Age:
-							<input type="text" name="age" id="age" v-model="age">
+							<input type="text" name="age" id="age" min="1" v-model="age">
 						</label>
 						<label for="gender">Gender:
 							Male
-							<input type="radio" name="gender" id="gender" v-model="gender">
+							<input type="radio" name="gender" id="gender-male" v-model="gender">
 							Female
-							<input type="radio" name="gender" id="gender" v-model="gender">
+							<input type="radio" name="gender" id="gender-female" v-model="gender">
 						</label>
 						<label for="role">Role:
-							<select name="role" id="role" v-model="role">
-								<option value="admin">User</option>
+							<select name="role" id="role" v-model="userRole">
+								<option value="user">User</option>
 								<option value="admin">Admin</option>
 							</select>
 						</label>
@@ -40,7 +40,7 @@
 							<input type="email" name="email" id="email" v-model="email">
 						</label>
 						<label class="input-group" for="password">Password:
-							<input :type="passwordType" name="password" id="password" v-model="password">
+							<input :type="passwordType" name="password" id="password" v-model="password" autocomplete="current-password">
 							<span class="eye-icon" @click="togglePasswordVisibility">
 								<i class="fas" :class="passwordIcon"></i>
 							</span>
@@ -63,45 +63,88 @@ export default {
 	},
 	data() {
 		return {
-			name: '',
-			surname: '',
+			firstName: '',
+			lastName: '',
 			age: '',
 			gender: '',
-			role: '',
+			userRole: '',
 			email: '',
 			password: '',
-			profile: '',
+			profile: null,
 			passwordType: 'password',
 			passwordIcon: 'fa-eye',
 		}
 	},
 	methods: {
 		handleSubmit() {
-			const formData = {
-				name: this.name,
-				surname: this.surname,
-				age: this.age,
-				gender: this.gender,
-				role: this.role,
-				email: this.email,
-				password: this.password,
-				profile: this.profile
+			if (!this.firstName.trim() || !this.lastName.trim() || !this.email.trim() || !this.password.trim() || !this.userRole) {
+				alert('All fields are required');
+				return;
 			}
 
-			this.$emit('add-user', formData)
-		}
-	},
-	handleProfileChange(event) {
-		this.profileFile = event.target.files[0]
-	},
-	togglePasswordVisibility() {
-		if (this.passwordType === 'password') {
-			this.passwordType = 'text';
-			this.passwordIcon = 'fa-eye-slash';
-		} else {
-			this.passwordType = 'password';
-			this.passwordIcon = 'fa-eye';
-		}
+			const userData = {
+				firstName: this.firstName,
+				lastName: this.lastName,
+				age: this.age,
+				gender: this.gender,
+				userRole: this.userRole,
+				profileFile: this.profileFile
+			}
+
+			const formData = new FormData();
+			formData.append('user', JSON.stringify(userData))
+			if (this.profileFile) {
+				formData.append('profileFile', this.profileFile)
+			}
+
+			console.log('User data being sent:', userData);
+			console.log('Profile file:', this.profileFile);
+			
+			// const formData = new FormData();
+			// formData.append('firstName', this.firstName);
+			// formData.append('lastName', this.lastName);
+			// formData.append('age', this.age);
+			// formData.append('gender', this.gender);
+			// formData.append('userRole', this.userRole);
+			// formData.append('email', this.email);
+			// formData.append('password', this.password);
+			// formData.append('profile', this.profile);
+
+			try {
+				this.$store.dispatch('addAdminUser', userData);
+				this.resetForm()
+			} catch (error) {
+				console.error('Error adding user:', error);
+			}
+
+		},
+		resetForm() {
+			// Reset form fields
+			this.firstName = '';
+			this.lastName = '';
+			this.age = '';
+			this.gender = '';
+			this.userRole = '';
+			this.email = '';
+			this.password = '';
+			this.profileFile = null;
+		},
+		handleProfileChange(event) {
+			const file = event.target.files[0]
+			const reader = new FileReader()
+
+			reader.onload = (e) => {
+				this.avatarUrl = e.target.result
+			}
+
+			if (file) {
+				reader.readAsDataURL(file)
+			}
+		},
+		togglePasswordVisibility() {
+			this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+			this.passwordIcon = this.passwordType === 'password' ? 'fa-eye' : 'fa-eye-slash';
+		},
 	},
 }
 </script>

@@ -1,43 +1,43 @@
 <template>
 	<div>
-		<div class="admin-user-modal">
-			<div class="user-modal">
+		<div class="admin-product-modal">
+			<div class="product-modal">
 				<div class="modal-head">
 					<div>
-						<p>Edit User</p>
+						<p>Edit product</p>
 					</div>
 					<div>
 						<button @click="$emit('close')">Close</button>
 					</div>
 				</div>
-				<div class="user-form">
-					<form @submit.prevent="editAdminUser" enctype="multipart/form-data">
+				<div class="product-form">
+					<form @submit.prevent="editAdminProduct" enctype="multipart/form-data">
 						<label for="profile">Profile Picture:
-							<input type="file" name="profile" id="profile" accept="image/jpg, image/png image/gif" @change="handleUserProfileChange">
+							<input type="file" name="profile" id="profile" accept="image/jpg, image/png image/gif" @change="handlePictureChange">
 						</label>
-						<label for="username">Firstname:
-							<input type="text" id="username" v-model="editUser.name">
+						<label for="productname">Firstname:
+							<input type="text" id="productname" v-model="editproduct.name">
 						</label>
 						<label for="surname">Surname:
-							<input type="text" name="surname" id="surname" v-model="editUser.surname">
+							<input type="text" name="surname" id="surname" v-model="editproduct.surname">
 						</label>
 						<label for="age">Age:
-							<input type="text" name="age" id="age" v-model="editUser.age">
+							<input type="text" name="age" id="age" v-model="editproduct.age">
 						</label>
 						<label for="gender">Gender:
 							Male
-							<input type="radio" name="gender" id="gender" v-model="editUser.gender">
+							<input type="radio" name="gender" id="gender" v-model="editproduct.gender">
 							Female
-							<input type="radio" name="gender" id="gender" v-model="editUser.gender">
+							<input type="radio" name="gender" id="gender" v-model="editproduct.gender">
 						</label>
 						<label for="role">Role:
-							<select name="role" id="role" v-model="editUser.role">
-								<option value="admin">User</option>
+							<select name="role" id="role" v-model="editproduct.role">
+								<option value="admin">product</option>
 								<option value="admin">Admin</option>
 							</select>
 						</label>
 						<label for="email">Email:
-							<input type="email" name="email" id="email" v-model="editUser.email">
+							<input type="email" name="email" id="email" v-model="editproduct.email">
 						</label>
 						<label class="input-group" for="password">Password:
 							<input :type="passwordType" name="password" id="password" v-model="password">
@@ -46,7 +46,7 @@
 							</span>
 						</label>
 						<div>
-							<button type="submit">Edit User</button>
+							<button type="submit">Edit product</button>
 						</div>
 					</form>
 				</div>
@@ -63,7 +63,7 @@ export default {
 	},
 	data() {
 		return {
-			editUser: {
+			editproduct: {
 				profile: '',
 				name: '',
 				surname: '',
@@ -78,21 +78,21 @@ export default {
 		}
 	},
 	methods: {
-		editAdminUser() {
+		editAdminProduct() {
 			const formData = new FormData();
 			formData.append('profile', this.profileFile);
-			formData.append('name', this.editUser.name);
-			formData.append('surname', this.editUser.surname);
-			formData.append('age', this.editUser.age);
-			formData.append('gender', this.editUser.gender);
-			formData.append('role', this.editUser.role);
-			formData.append('email', this.editUser.email);
+			formData.append('name', this.editProduct.name);
+			formData.append('surname', this.editProduct.surname);
+			formData.append('age', this.editProduct.age);
+			formData.append('gender', this.editProduct.gender);
+			formData.append('role', this.editProduct.role);
+			formData.append('email', this.editProduct.email);
 			formData.append('password', this.password);
 
-			this.$store.dispatch('editAdminUser', formData)
+			this.$store.dispatch('editAdminproduct', formData)
         .then(() => {
-          console.log('User added successfully')
-          this.editUser = {
+          console.log('product added successfully')
+          this.editProduct = {
             profile: '',
             name: '',
             surname: '',
@@ -105,11 +105,11 @@ export default {
           this.profileFile = null
         })
         .catch(error => {
-          console.error('Error adding admin user:', error)
+          console.error('Error adding admin product:', error)
         })
 		}
 	},
-	handleUserProfileChange(event) {
+	handlePictureChange(event) {
 		this.profileFile = event.target.files[0]
 	},
 	togglePasswordVisibility() {
@@ -124,7 +124,7 @@ export default {
 }
 </script>
 <style scoped>
-    .admin-user-modal {
+    .admin-product-modal {
         position: fixed;
         top: 0;
         right: 0;
@@ -133,7 +133,7 @@ export default {
         background-color: rgba(0, 0, 0, .5);
         transition: .5s ease-in-out;
     }
-    .user-modal {
+    .product-modal {
         position: absolute;
         top: 8em;
         right: 31%;
@@ -145,10 +145,10 @@ export default {
         transition: transform .5s ease-in-out;
 		border-radius: 10px;
     }
-		.admin-user-modal.show {
+		.admin-product-modal.show {
         visibility: visible;
     }
-    .user-modal {
+    .product-modal {
         transform: translateX(0);
     }
 		form {
@@ -166,7 +166,7 @@ export default {
 			margin: 0 1em 1em;
 			border-bottom: 1px solid black;
 		}
-		.user-form {
+		.product-form {
 			display: grid;
 			padding: 0;
 			margin: 0;
@@ -182,7 +182,7 @@ export default {
     }
 
 		@media only screen and (max-width: 500px) {
-			.user-modal {
+			.product-modal {
 				right: 11%;
 				width: 45em;
 				height: 25%;
@@ -190,7 +190,7 @@ export default {
 		}
 
 		@media only screen and (max-width: 320px) {
-			.user-modal {
+			.product-modal {
 				right: 11%;
 				width: 45em;
 				height: 15%;

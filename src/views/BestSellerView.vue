@@ -61,7 +61,7 @@
                     </card-comp>
                 </div>
                 <div>
-                    <cart-modal-comp :show="isModalOpen" :cartItems="cartItems" @close="closeModal" @checkout="checkout" />
+                    <cart-modal-comp :show="isModalOpen" :cartItems="cartItems" @close="closeModal" @checkout="checkout" @remove-from-cart="removeFromCart" />
                 </div>
                 <div class="prod-footer">
                     <footer-comp/>
@@ -88,6 +88,7 @@ export default {
             quantity: 1,
             isModalOpen: false,
             expandedIndex: 0,
+            isAuthenticated: false,
             descriptions: [
                 { title: "PRODUCT INFO", content: "" },
                 { title: "RETURN & REFUND POLICY", content: "Returns are accepted within 30 days of delivery for a refund or exchange if items are in original condition. Contact customer service to initiate a return and receive a return shipping label. Return shipping costs are the customer’s responsibility, unless due to our error. Refunds are processed within 5-7 business days after receiving the item. More info can be found on the FAQ page" },
@@ -114,7 +115,10 @@ export default {
         },
         cartItems() {
             return this.$store.state.cart
-        }
+        },
+        authenticated() {
+            return this.$store.state.isAuthenticated
+        },
     },
     methods: {
         async getBestSeller() {
@@ -152,15 +156,48 @@ export default {
             }
 
             this.isModalOpen = true
-            this.$store.dispatch('addToCart', { id: product.bestSellerId, product, quantity: 1 })
+            
+            const existingCartItem = this.cartItems.find(item => item.id === product.prodId)
 
-            this.$store.commit('UPDATE_CART_ITEMS', { id: product.bestSellerId, product, quantity: 1 });
+            if (existingCartItem) {
+                existingCartItem.quantity += this.quantity
+                this.$store.commit('UPDATE_CART_ITEMS', this.cartItems)
+            } else {
+                const newCartItem = { id: product.prodId, product, quantity: this.quantity }
+                this.$store.commit('UPDATE_CART_ITEMS', [ ...this.cartItems, newCartItem ])
+            }
+
+            localStorage.setItem('cartItems', JSON.stringify(this.cartItems))
+
+            if (this.authenticated) {
+                // const cartItems = [...this.cartItems, { id: product.prodId, product, quantity: 1 }]
+                this.$store.dispatch('addToCartDatabase', this.cartItems)
+
+            } else {
+                alert('Please log in or sign up to complete the checkout.')
+                this.$router.push({ name: 'login' })
+            }
         },
         closeModal() {
             this.isModalOpen = false
-        }
+        },
+        removeFromCart(itemId) {
+            this.$emit('remove-from-cart', itemId);
+            const cartItems = this.cartItems.filter(item => item.id !== itemId);
+            this.$store.commit('UPDATE_CART_ITEMS', cartItems);
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
+            if (this.authenticated) {
+                this.$store.dispatch('removeFromCartDatabase', itemId);
+            }
+        },
     },
     mounted() {
+        const storedCartItems = localStorage.getItem('cartItems')
+        if (storedCartItems) {
+            this.$store.cartItems = JSON.parse(storedCartItems)
+        }
+
         this.productId = this.$route.params.id
         this.getBestSeller()
     },

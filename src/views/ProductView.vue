@@ -64,7 +64,7 @@
                     </card-comp>
                 </div>
                 <div>
-                    <cart-modal-comp :show="isModalOpen" :cartItems="cartItems" @close="closeModal" @checkout="checkout" />
+                    <cart-modal-comp :show="isModalOpen" :cartItems="cartItems" @close="closeModal" @checkout="checkout" @remove-from-cart="removeFromCart" />
                 </div>
                 <div class="prod-footer">
                     <footer-comp/>

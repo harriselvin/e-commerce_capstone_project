@@ -29,9 +29,12 @@ export default createStore({
     adminUsers: [],
     addAdminUser: null,
     addUser: null,
+    addProduct: null,
     editAdminUser: null,
     editUser: null,
+    editProduct: null,
     removeUser: null,
+    removeProduct: null,
     products: [],
     product: null,
     bestSellers: [],
@@ -61,14 +64,20 @@ export default createStore({
     setAddUser(state, payload) {
       state.addUser = payload
     },
+    setAddProduct(state, payload) {
+      state.addProduct = payload
+    },
     setAddAdminUser(state, payload) {
       state.addAdminUser = payload
+    },
+    setEditAdminUser(state, payload) {
+      state.editAdminUser = payload
     },
     setEditUser(state, payload) {
       state.editUser = payload
     },
-    setEditAdminUser(state, payload) {
-      state.editAdminUser = payload
+    setEditProduct(state, payload) {
+      state.editProduct = payload
     },
     removeUser(state, userId) {
       state.users = state.users.filter(user => user.id !== userId)
@@ -170,21 +179,21 @@ export default createStore({
         console.error('Error fetching admin users', error)
       }
     },
-    async addAdminUser({ commit }, { user, profileFile }) {
+    async addAdminUser({ commit }, userData) {
       try {
-        const formData = new FormData()
-        formData.append('user', JSON.stringify(user))
-        if (profileFile) {
-          formData.append('profile', profileFile)
-        }
-        const {data} = await axios.post(`${apiLink}registerAdmin`, formData, {
+        const response = await axios.post(`${apiLink}registerAdmin`, userData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
-        })
+        });
+        commit('SET_USER', response.data);
         commit('setAddAdminUser', data)
       } catch (error) {
-        console.error('Error adding user:', error.response || error);
+        console.error('Error adding user:', {
+          message: error.message,
+          response: error.response ? error.response.data : 'No response data',
+          status: error.response ? error.response.status : 'No response status',
+        });
       }
     },
     async editUser({ commit }, id) {
@@ -193,6 +202,15 @@ export default createStore({
         commit('setEditUser', data)
       } catch (error) {
         console.error('Error editing user', error)
+        commit('setError', error.message)
+      }
+    },
+    async editProduct({ commit }, id) {
+      try {
+        const {data} = await axios.put(`${apiLink}item/${id}`)
+        commit('setEditProduct', data)
+      } catch (error) {
+        console.error('Error editing product', error)
         commit('setError', error.message)
       }
     },
@@ -208,10 +226,20 @@ export default createStore({
     async removeUser({ commit }, id) {
       try {
         const { data } = await axios.delete(`${apiLink}user/${id}`)
-        commit('setRemoveUserFromList', data)
+        commit('removeUser', data)
         alert('User successfully deleted!')
       } catch (error) {
         console.error('Error removing user', error)
+        commit('setError', error.message)
+      }
+    },
+    async removeProduct({ commit }, id) {
+      try {
+        const { data } = await axios.delete(`${apiLink}item/${id}`)
+        commit('removeProduct', data)
+        alert('Product successfully deleted!')
+      } catch (error) {
+        console.error('Error removing product', error)
         commit('setError', error.message)
       }
     },
@@ -281,6 +309,20 @@ export default createStore({
         throw error;
       }
     },
+    async addProduct({ commit }, product) {
+      try {
+        const response = await axios.post(`${apiLink}items`, product)
+        const token = response.data.token
+
+        // VueCookies.set('token', token, 'id')
+        // commit('setAuthentication', true);
+        commit('setAddProduct', response.data)
+      } catch (error) {
+        console.error('Signup error:', error.response || error);
+        commit('setAuthentication', false);
+        throw error;
+      }
+    },
     async loginUser({ commit }, { email, password }) {
       try {
         let response = await axios.post(`${apiLink}loginAdmin`, { email, password })
@@ -314,20 +356,6 @@ export default createStore({
           cartItems.push({ product, quantity: product.quantity })
         }
 
-        // retrieve user ID from cookie or store/VueX state
-        // const userId = state.userId || getCookie('userId') 
-        // const token = getCookie('token')
-
-        // const axiosInstance = axios.create({
-        //   baseURL: apiLink,
-        //   headers: {
-        //     Authorization: `Bearer ${token}`,
-        //     'Content-Type': 'application/json'
-        //   }
-        // })
-
-        // const {data} = await axiosInstance.post(`user/${userId}/cart`, cartItems)
-
         commit('setAddToCart', cartItems)
 
         localStorage.setItem('cartItems', JSON.stringify(cartItems))
@@ -357,17 +385,6 @@ export default createStore({
 
         await Promise.all(promises)
 
-        // await Promise.all(
-        //   cartItems.map(async (item) => {
-        //     await axiosInstance.post(`${apiLink}user/${userId}/cart`, {
-        //       product: item.product.id,
-        //       quantity: item.quantity
-        //     })
-        //   })
-        // )
-
-        // const response = await axios.post(`${apiLink}user/${userId}/cart`, cartItems)
-        // const cartItem = { product: cartItems[0].product, quantity: cartItems[0].quantity }
         commit('UPDATE_CART_ITEMS', state.cart)
         // commit('setCartItems', cartItems)
         localStorage.setItem('cartItems', JSON.stringify(state.cart))
@@ -379,7 +396,7 @@ export default createStore({
     },
     async deleteUser({ commit }, userId) {
       try {
-        const { data } = await axios.delete(`${apiLink}user/${userId}`)
+        await axios.delete(`${apiLink}user/${userId}`)
         commit('removeUser', userId)
       } catch (error) {
         console.error('Error deleting user:', error);
@@ -388,7 +405,7 @@ export default createStore({
     },
     async deleteProduct({ commit }, productId) {
       try {
-        const { data } = await axios.delete(`${apiLink}item/${productId}`)
+        await axios.delete(`${apiLink}item/${productId}`)
         commit('removeProduct', productId)
       } catch (error) {
         console.error('Error deleting product:', error);
