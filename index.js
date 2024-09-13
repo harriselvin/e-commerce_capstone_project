@@ -12,7 +12,7 @@ const port = process.env.PORT || 2000
 const app = express()
 
 app.use(cors({
-    origin: 'http://localhost:8080',
+    origin: ['http://localhost:8080', 'https://e-commerce-capstone-project.web.app'],
     credentials: true
 }))
 
