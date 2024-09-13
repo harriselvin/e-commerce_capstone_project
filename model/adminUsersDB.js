@@ -65,7 +65,7 @@ const getAdminUsersDB = async () => {
     if (!id) {
       throw new Error('Admin user ID is required');
     }
-    if (!firstName || !lastName || !age || !gender || !userRole || !email || !password || !userProfile) {
+    if (!firstName || !lastName || !age || !gender || !userRole || !email || !password) {
       throw new Error('All admin user fields are required');
     }
     try {
@@ -80,7 +80,7 @@ const getAdminUsersDB = async () => {
         password = ?,
         userProfile = ?
         WHERE userID = ?
-        `, [firstName, lastName, age, gender, userRole, email, password, userProfile, id]);
+        `, [firstName, lastName, age, gender, userRole, email, password, userProfile || 'https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=', id]);
     } catch (error) {
       console.error('Error updating admin user:', error);
       throw new Error(`Failed to update admin user with ID ${id}: ${error.message}`);

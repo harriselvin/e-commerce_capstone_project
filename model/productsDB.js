@@ -36,7 +36,7 @@ const addProductDB = async (prodName, price, quantity, category, prodUrl, prodDe
     const [data] = await pool.query(`
       INSERT INTO products (prodName, price, quantity, category, prodUrl, prodDesc, prodInfo)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-      `, [prodName, price, quantity, category, prodUrl, prodDesc, prodInfo]);
+      `, [prodName, price, quantity, category, prodUrl || 'https://img.freepik.com/premium-vector/soccer-ball-shoes-jersey-with-colored-hand-drawn-illustration_288411-986.jpg?w=360', prodDesc, prodInfo]);
     return data;
   } catch (error) {
     console.error('Error adding product:', error);
