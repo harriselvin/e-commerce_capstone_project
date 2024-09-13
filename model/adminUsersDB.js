@@ -32,14 +32,14 @@ const getAdminUsersDB = async () => {
   };
   
   const addAdminUserDB = async (firstName, lastName, age, gender, userRole, email, password, userProfile) => {
-    if (!firstName || !lastName ||!age || !gender || !userRole ||!email || !password || !userProfile) {
+    if (!firstName || !lastName ||!age || !gender || !userRole ||!email || !password) {
       throw new Error('All admin user fields are required');
     }
     try {
       await pool.query(`
         INSERT INTO adminUsers (firstName, lastName, age, gender, userRole, email, password, userProfile)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `, [firstName, lastName, age, gender, userRole, email, password, userProfile]);
+        `, [firstName, lastName, age, gender, userRole, email, password, userProfile || 'https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=']);
     } catch (error) {
       console.error('Error adding admin user:', error);
       throw new Error(`Failed to add admin user: ${error.message}`);

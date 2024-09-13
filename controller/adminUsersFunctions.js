@@ -28,7 +28,7 @@ const fetchAdminUser = async (req, res) => {
 const addAdminUser = async (req, res) => {
   try {
     const { firstName, lastName, age, gender, userRole, email, password, userProfile } = req.body;
-    if (!firstName || !lastName || !age || !gender || !userRole || !email || !password || !userProfile) {
+    if (!firstName || !lastName || !age || !gender || !userRole || !email || !password) {
       res.status(400).send('All admin user fields are required');
     } else {
       hash(password, 10, async (err, hashedP) => {
