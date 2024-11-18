@@ -3,38 +3,40 @@ import { fetchCartItems, addToCart, deleteAllCartItems, deleteCartItem, updateCa
 
 const cartRouter = express.Router()
 
-// cartRouter.get('/user/:id/carts', fetchCartItems)
-//         .post('/user/:id/cart', addToCart)
-//         .patch('/user/:id/cart/:id', updateCartItem)
-//         .delete('/user/:id/cart', deleteAllCartItems)
-//         .delete('/user/:id/cart/:id', deleteCartItem)
-
 cartRouter.get('/user/:id/carts', (req, res) => {
-        const userId = req.params.id;
-        fetchCartItems(userId, req, res);
+        fetchCartItems(req, res);
     })
     
-    .post('/user/:id/cart', (req, res) => {
+cartRouter.post('/user/:id/cart', async (req, res) => {
+    try {
         const userId = req.params.id;
-        const cartItem = req.body; // assuming the cart item data is in the request body
-        addToCart(userId, cartItem, req, res);
-    })
+        await addToCart(req, res, userId);
+    } catch (error) {
+        console.error('Error adding item to cart:', error);
+        res.status(500).json({ message: 'Error adding item to cart' });
+    }
+})
     
-    .patch('/user/:id/cart/:cartId', (req, res) => {
-        const userId = req.params.id;
-        const cartId = req.params.cartId;
-        updateCartItem(userId, cartId, req, res);
-    })
+cartRouter.patch('/user/:id/cart/:prodID', async (req, res) => {
+    try {
+        const userID = req.params.id
+        const prodID = req.params.prodID
+        const quantity = req.body.quantity
+        await updateCartItem(req, res, userID, prodID, quantity);
+    } catch (error) {
+        console.error('Error updating cart item:', error);
+        res.status(500).json({ message: 'Error updating cart item' });
+    }
+})
     
-    .delete('/user/:id/cart', (req, res) => {
-        const userId = req.params.id;
-        deleteAllCartItems(userId, req, res);
-    })
+cartRouter.delete('/user/:id/cart', (req, res) => {
+    const userId = req.params.id;
+    deleteAllCartItems(req, res, userId);
+})
     
-    .delete('/user/:id/cart/:cartId', (req, res) => {
-        const userId = req.params.id;
-        const cartId = req.params.cartId;
-        deleteCartItem(userId, cartId, req, res);
-    })
+cartRouter.delete('/user/:id/cart/:cartId', (req, res) => {
+    const cartItemID = req.params.cartId;
+    deleteCartItem(req, res, cartItemID);
+})
 
 export default cartRouter

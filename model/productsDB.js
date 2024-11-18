@@ -36,7 +36,7 @@ const addProductDB = async (prodName, price, quantity, category, prodUrl, prodDe
     const [data] = await pool.query(`
       INSERT INTO products (prodName, price, quantity, category, prodUrl, prodDesc, prodInfo)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-      `, [prodName, price, quantity, category, prodUrl, prodDesc, prodInfo]);
+      `, [prodName, price, quantity, category, prodUrl || 'https://img.freepik.com/premium-vector/soccer-ball-shoes-jersey-with-colored-hand-drawn-illustration_288411-986.jpg?w=360', prodDesc, prodInfo]);
     return data;
   } catch (error) {
     console.error('Error adding product:', error);
@@ -63,7 +63,7 @@ const updateProductDB = async (prodName, price, quantity, category, prodUrl, pro
   if (!id) {
     throw new Error('Product ID is required');
   }
-  if (!prodName || !price || !quantity || !category || !prodUrl || !prodDesc || !prodInfo) {
+  if (!prodName || !price || !quantity || !category || !prodDesc || !prodInfo) {
     throw new Error('All product fields are required');
   }
   try {
@@ -77,7 +77,7 @@ const updateProductDB = async (prodName, price, quantity, category, prodUrl, pro
       prodDesc = ?,
       prodInfo = ?
       WHERE prodID = ?
-      `, [prodName, price, quantity, category, prodUrl, prodDesc, prodInfo, id]);
+      `, [prodName, price, quantity, category, prodUrl || 'https://img.freepik.com/premium-vector/soccer-ball-shoes-jersey-with-colored-hand-drawn-illustration_288411-986.jpg?w=360', prodDesc, prodInfo, id]);
   } catch (error) {
     console.error('Error updating product:', error);
     throw new Error(`Failed to update product with ID ${id}: ${error.message}`);

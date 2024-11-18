@@ -31,15 +31,15 @@ const getUserDB = async (id) => {
   }
 };
 
-const addUserDB = async (firstName, lastName, age, gender, country, userRole, email, password, userProfile) => {
-  if (!firstName || !lastName || !age || !gender || !country || !userRole || !email || !password || !userProfile) {
+const addUserDB = async (firstName, email, password) => {
+  if (!firstName ||!email || !password) {
     throw new Error('All user fields are required');
   }
   try {
     await pool.query(`
-      INSERT INTO users (firstName, lastName, age, gender, country, userRole, email, password, userProfile)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `, [firstName, lastName, age, gender, country, userRole, email, password, userProfile]);
+      INSERT INTO users (firstName, email, password)
+      VALUES (?, ?, ?)
+      `, [firstName, email, password]);
   } catch (error) {
     console.error('Error adding user:', error);
     throw new Error(`Failed to add user: ${error.message}`);
@@ -65,7 +65,7 @@ const updateUserDB = async (firstName, lastName, age, gender, country, userRole,
   if (!id) {
     throw new Error('User ID is required');
   }
-  if (!firstName || !lastName || !age || !gender || !country || !userRole || !email || !password || !userProfile) {
+  if (!firstName || !lastName || !age || !gender || !country || !userRole || !email || !password) {
     throw new Error('All user fields are required');
   }
   try {
@@ -81,7 +81,7 @@ const updateUserDB = async (firstName, lastName, age, gender, country, userRole,
       password = ?,
       userProfile = ?
       WHERE userID = ?
-      `, [firstName, lastName, age, gender, country, userRole, email, password, userProfile, id]);
+      `, [firstName, lastName, age, gender, country, userRole, email, password, userProfile || 'https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI=', id]);
   } catch (error) {
     console.error('Error updating user:', error);
     throw new Error(`Failed to update user with ID ${id}: ${error.message}`);
