@@ -44,7 +44,7 @@
                             </div>
                             <div class="cart-actions">
                                 <button @click="handleCheckout">Checkout</button>
-                                <button>Clear</button>
+                                <button @click="removerAllItems()">Clear</button>
                             </div>
                         </div>
                     </div>
@@ -118,6 +118,18 @@ export default {
                 this.$store.dispatch('removeFromCartDatabase', itemId);
             }
         },
+        removerAllItems() {
+            this.$emit('remove-from-cart')
+            
+            const cartItems = []
+            this.$store.commit('UPDATE_CART_ITEMS', cartItems)
+            localStorage.setItem('cartItems', JSON.stringify(cartItems))
+
+            if (this.authenticated) {
+                const userId = this.$store.state.user.id
+                this.$store.dispatch('clearCartDatabase', userId)
+            }
+        }
     },
     watch: {
         '$store.state.isAuthenticated'(newVal) {

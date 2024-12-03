@@ -122,13 +122,15 @@ export default createStore({
       state.error = payload
     },
     setAddToCart(state, product) {
-      const index = state.cart.findIndex(item => item.product.id === product.id);
-      if (index !== -1) {
-        // cartItem.quantity += quantity
-        state.cart[index].quantity += product.quantity
-      } else {
-        state.cart.push({ product, quantity: product.quantity })
-      }
+      // const index = state.cart.findIndex(item => item.product.id === product.id);
+      // if (index !== -1) {
+      //   // cartItem.quantity += quantity
+      //   state.cart[index].quantity += product.quantity
+      // } else {
+      //   state.cart.push({ product, quantity: product.quantity })
+      // }
+
+      state.cart = cartItems
     },
     setCartItems(state, payload) {
       state.cartItems = payload.map(item => ({
@@ -347,7 +349,7 @@ export default createStore({
     },
     async addToCart({ commit, state }, product) {
       try {
-        const cartItems = state.cart
+        const cartItems = [...state.cart]
         const existingProductIndex = cartItems.findIndex(item => item.product.id === product.id)
 
         if (existingProductIndex !== -1) {
@@ -440,6 +442,16 @@ export default createStore({
       } catch (error) {
         console.error( 'Error fetching cart items:', error);
       }
+    },
+    async clearCartDatabase({commit}, userId) {
+      return axios
+      .delete(`https://e-commerce-capstone-project.onrender.com/user/${userId}/cart`)
+      .then(() => {
+          console.log('All cart items removed from database');
+      })
+      .catch((error) => {
+          console.error('Error removing all cart items:', error);
+      });
     },
     async login({commit}, { email, password }) {
       try {
